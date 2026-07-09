@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import type { ResumeData } from '../types/resume';
 import { FormPanel } from './FormPanel';
 import { PreviewPanel } from './PreviewPanel';
@@ -72,23 +72,17 @@ interface CustomSelectProps {
 
 const CustomSelect: React.FC<CustomSelectProps> = ({ value, options, onChange, grouped }) => {
   const [open, setOpen] = useState(false);
-  const [rect, setRect] = useState<DOMRect | null>(null);
-  const btnRef = useRef<HTMLButtonElement>(null);
-
-  const handleOpen = useCallback(() => {
-    if (btnRef.current) setRect(btnRef.current.getBoundingClientRect());
-    setOpen(o => !o);
-  }, []);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!open) return;
-    const close = () => setOpen(false);
-    window.addEventListener('scroll', close, true);
-    window.addEventListener('resize', close);
-    return () => {
-      window.removeEventListener('scroll', close, true);
-      window.removeEventListener('resize', close);
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
     };
+    document.addEventListener('click', handleOutsideClick);
+    return () => document.removeEventListener('click', handleOutsideClick);
   }, [open]);
 
   const selected = options.find(o => o.value === value);
@@ -103,76 +97,65 @@ const CustomSelect: React.FC<CustomSelectProps> = ({ value, options, onChange, g
   }
 
   return (
-    <div className="relative w-full">
+    <div className="relative w-full" ref={containerRef}>
       <button
-        ref={btnRef}
         type="button"
-        onClick={handleOpen}
+        onClick={() => setOpen(o => !o)}
         className="w-full flex items-center justify-between text-xs bg-slate-950 border border-slate-800 rounded-lg px-3 py-2.5 text-slate-200 hover:border-indigo-500/60 transition font-medium gap-1.5"
       >
         <span className="truncate min-w-0">{selected?.label ?? value}</span>
         <ChevronDown className={`w-3.5 h-3.5 text-slate-500 shrink-0 transition-transform duration-150 ${open ? 'rotate-180' : ''}`} />
       </button>
 
-      {open && rect && (
-        <>
-          <div className="fixed inset-0" style={{ zIndex: 9998 }} onClick={() => setOpen(false)} />
-          <div
-            style={{
-              position: 'fixed',
-              top: rect.bottom + 4,
-              left: rect.left,
-              width: Math.max(rect.width, 180),
-              zIndex: 9999,
-              maxHeight: 260,
-            }}
-            className="bg-slate-900 border border-slate-700 rounded-xl shadow-2xl overflow-y-auto custom-scrollbar"
-          >
-            <div className="p-1.5">
-              {grouped
-                ? Object.entries(groups).map(([groupName, opts]) => (
-                    <div key={groupName} className="mb-1">
-                      {groupName && (
-                        <div className="text-[9px] text-slate-500 font-bold uppercase tracking-widest px-2.5 pt-2 pb-1 select-none">
-                          {groupName}
-                        </div>
-                      )}
-                      {opts.map(opt => (
-                        <button
-                          key={opt.value}
-                          type="button"
-                          onClick={() => { onChange(opt.value); setOpen(false); }}
-                          className={`w-full text-left text-xs flex items-center justify-between px-2.5 py-1.5 rounded-lg transition ${
-                            opt.value === value
-                              ? 'bg-indigo-600/30 text-indigo-300 font-semibold'
-                              : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-                          }`}
-                        >
-                          <span>{opt.label}</span>
-                          {opt.value === value && <Check className="w-3 h-3 text-indigo-400 shrink-0" />}
-                        </button>
-                      ))}
-                    </div>
-                  ))
-                : options.map(opt => (
-                    <button
-                      key={opt.value}
-                      type="button"
-                      onClick={() => { onChange(opt.value); setOpen(false); }}
-                      className={`w-full text-left text-xs flex items-center justify-between px-2.5 py-1.5 rounded-lg transition ${
-                        opt.value === value
-                          ? 'bg-indigo-600/30 text-indigo-300 font-semibold'
-                          : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-                      }`}
-                    >
-                      <span>{opt.label}</span>
-                      {opt.value === value && <Check className="w-3 h-3 text-indigo-400 shrink-0" />}
-                    </button>
-                  ))
-              }
-            </div>
+      {open && (
+        <div
+          className="absolute left-0 mt-1 w-full bg-slate-900 border border-slate-700 rounded-xl shadow-2xl overflow-y-auto custom-scrollbar z-50 animate-slideDown"
+          style={{ maxHeight: '260px' }}
+        >
+          <div className="p-1.5">
+            {grouped
+              ? Object.entries(groups).map(([groupName, opts]) => (
+                  <div key={groupName} className="mb-1">
+                    {groupName && (
+                      <div className="text-[9px] text-slate-500 font-bold uppercase tracking-widest px-2.5 pt-2 pb-1 select-none">
+                        {groupName}
+                      </div>
+                    )}
+                    {opts.map(opt => (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        onClick={() => { onChange(opt.value); setOpen(false); }}
+                        className={`w-full text-left text-xs flex items-center justify-between px-2.5 py-1.5 rounded-lg transition ${
+                          opt.value === value
+                            ? 'bg-indigo-600/30 text-indigo-300 font-semibold'
+                            : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                        }`}
+                      >
+                        <span>{opt.label}</span>
+                        {opt.value === value && <Check className="w-3 h-3 text-indigo-400 shrink-0" />}
+                      </button>
+                    ))}
+                  </div>
+                ))
+              : options.map(opt => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => { onChange(opt.value); setOpen(false); }}
+                    className={`w-full text-left text-xs flex items-center justify-between px-2.5 py-1.5 rounded-lg transition ${
+                      opt.value === value
+                        ? 'bg-indigo-600/30 text-indigo-300 font-semibold'
+                        : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                    }`}
+                  >
+                    <span>{opt.label}</span>
+                    {opt.value === value && <Check className="w-3 h-3 text-indigo-400 shrink-0" />}
+                  </button>
+                ))
+            }
           </div>
-        </>
+        </div>
       )}
     </div>
   );
@@ -325,7 +308,7 @@ export const Layout: React.FC<LayoutProps> = ({ data, onChange }) => {
 
       {/* Style Settings Drawer */}
       {showStyleDrawer && (
-        <div className="shrink-0 bg-slate-900 border-b border-slate-800 px-4 md:px-6 py-4 animate-slideDown">
+        <div className="shrink-0 bg-slate-900 border-b border-slate-800 px-4 md:px-6 py-4 animate-slideDown relative z-45">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="md:col-span-2 space-y-1.5">
               <label className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Template (12 options)</label>

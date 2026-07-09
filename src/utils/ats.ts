@@ -153,10 +153,9 @@ export const scanAts = (data: ResumeData, jobDescription: string = ''): AtsRepor
   if (jobDescription.trim()) {
     // Helper to tokenize text and extract potential keywords
     const extractKeywords = (text: string): string[] => {
-      // Extract words including tech terms containing symbols, like C++, C#, .NET, Node.js
       const rawWords = text.match(/[a-zA-Z\d+#.]+/g) || [];
       return rawWords
-        .map(w => w.trim())
+        .map(w => w.trim().replace(/\.+$/, ''))
         .filter(w => {
           const lower = w.toLowerCase();
           // Filter out stop words, general words, numbers, and short noise

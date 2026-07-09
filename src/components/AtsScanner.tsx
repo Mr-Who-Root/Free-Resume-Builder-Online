@@ -36,6 +36,10 @@ export const AtsScanner: React.FC<AtsScannerProps> = ({ resumeData }) => {
     }
   };
 
+  const overallScore = report.keywordMatch
+    ? Math.round((report.score + report.keywordMatch.score) / 2)
+    : report.score;
+
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 text-slate-100 shadow-xl space-y-6">
       <div className="flex items-center justify-between">
@@ -43,8 +47,8 @@ export const AtsScanner: React.FC<AtsScannerProps> = ({ resumeData }) => {
           <Sparkles className="w-6 h-6 text-indigo-400" />
           <h2 className="text-xl font-bold tracking-wide">ATS Optimization Scanner</h2>
         </div>
-        <div className={`px-3 py-1 border text-sm font-semibold rounded-full ${getScoreColor(report.score)}`}>
-          Format Score: {report.score}/100
+        <div className={`px-3 py-1 border text-sm font-semibold rounded-full ${getScoreColor(overallScore)}`}>
+          {report.keywordMatch ? 'Overall ATS Score' : 'Format Score'}: {overallScore}/100
         </div>
       </div>
 
