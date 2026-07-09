@@ -178,10 +178,18 @@ export const ModernSplit: React.FC<TemplateProps> = ({ data, styleUtils }) => {
       {renderSectionHeader(section.title, onDark)}
       <div className="space-y-3">
         {section.items.map((item) => {
-          const titleVal = item.title || item.name || Object.values(item)[1] || '';
-          const dateVal = item.date || item.year || '';
-          const orgVal = item.org || item.publisher || item.subtitle || '';
-          const descVal = item.desc || item.description || item.details || '';
+          const titleField = section.fields.find(f => f.type === 'title') || section.fields[0];
+          const dateField = section.fields.find(f => f.type === 'date');
+          const descriptionFields = section.fields.filter(f => f.type === 'textarea');
+          
+          const metaFields = section.fields.filter(f => 
+            f.id !== titleField?.id && 
+            f.id !== dateField?.id && 
+            f.type !== 'textarea'
+          );
+
+          const titleVal = titleField ? item[titleField.name] : '';
+          const dateVal = dateField ? item[dateField.name] : '';
 
           return (
             <div key={item.id} className="space-y-0.5 text-[11px]">
@@ -189,12 +197,37 @@ export const ModernSplit: React.FC<TemplateProps> = ({ data, styleUtils }) => {
                 <span>{titleVal}</span>
                 {dateVal && <span className={`${onDark ? 'text-gray-400' : 'text-gray-500'} font-normal text-[9px]`}>{dateVal}</span>}
               </div>
-              {orgVal && <div className={`${onDark ? 'text-gray-300' : 'text-gray-600'} italic text-[10px]`}>{orgVal}</div>}
-              {descVal && (
-                <div className={`mt-0.5 ${onDark ? 'text-gray-300' : 'text-gray-800'}`}>
-                  <MarkdownText text={descVal} className="text-[10px]" />
+              
+              {metaFields.length > 0 && (
+                <div className={`text-[10px] flex flex-wrap gap-x-2.5 gap-y-0.5 mt-0.5 ${onDark ? 'text-gray-300' : 'text-gray-650'}`}>
+                  {metaFields.map(f => {
+                    const val = item[f.name];
+                    if (!val) return null;
+                    if (/^https?:\/\//i.test(val)) {
+                      return (
+                        <a key={f.id} href={val} target="_blank" rel="noopener noreferrer" className="underline hover:text-indigo-400">
+                          {f.label}: {val}
+                        </a>
+                      );
+                    }
+                    return (
+                      <span key={f.id}>
+                        <span className="font-medium">{f.label}:</span> {val}
+                      </span>
+                    );
+                  })}
                 </div>
               )}
+
+              {descriptionFields.map(f => {
+                const val = item[f.name];
+                if (!val) return null;
+                return (
+                  <div key={f.id} className={`mt-0.5 ${onDark ? 'text-gray-300' : 'text-gray-800'}`}>
+                    <MarkdownText text={val} className="text-[10px]" />
+                  </div>
+                );
+              })}
             </div>
           );
         })}

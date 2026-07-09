@@ -15,7 +15,13 @@ export const TemplateRenderer: React.FC<TemplateRendererProps> = ({ data }) => {
   const fontMap = {
     sans: 'font-sans',
     serif: 'font-serif',
-    mono: 'font-mono'
+    mono: 'font-mono',
+    inter: 'font-inter',
+    outfit: 'font-outfit',
+    roboto: 'font-roboto',
+    lora: 'font-lora',
+    playfair: 'font-playfair',
+    robotomono: 'font-robotomono',
   };
 
   const sizeMap = {
@@ -43,7 +49,7 @@ export const TemplateRenderer: React.FC<TemplateRendererProps> = ({ data }) => {
     large: 'p-10'
   };
 
-  const colorMap = {
+  const colorMap: Record<string, { color: string; text: string; border: string; bg: string; bgLight: string }> = {
     navy: {
       color: '#1e3a8a',
       text: 'text-blue-800',
@@ -85,6 +91,34 @@ export const TemplateRenderer: React.FC<TemplateRendererProps> = ({ data }) => {
       border: 'border-gray-900/80',
       bg: 'bg-gray-800',
       bgLight: 'bg-gray-100'
+    },
+    teal: {
+      color: '#0f766e',
+      text: 'text-teal-800',
+      border: 'border-teal-800/80',
+      bg: 'bg-teal-700',
+      bgLight: 'bg-teal-50/80'
+    },
+    amber: {
+      color: '#b45309',
+      text: 'text-amber-800',
+      border: 'border-amber-800/80',
+      bg: 'bg-amber-700',
+      bgLight: 'bg-amber-50/80'
+    },
+    rose: {
+      color: '#be123c',
+      text: 'text-rose-800',
+      border: 'border-rose-800/80',
+      bg: 'bg-rose-700',
+      bgLight: 'bg-rose-50/80'
+    },
+    violet: {
+      color: '#6d28d9',
+      text: 'text-violet-800',
+      border: 'border-violet-800/80',
+      bg: 'bg-violet-700',
+      bgLight: 'bg-violet-50/80'
     }
   };
 

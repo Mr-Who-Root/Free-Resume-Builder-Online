@@ -57,3 +57,78 @@
 .animate-fadeIn {
   animation: fadeIn 0.2s ease-out forwards;
 }
+
+/* Premium typography utility classes */
+.font-inter { font-family: 'Inter', sans-serif !important; }
+.font-outfit { font-family: 'Outfit', sans-serif !important; }
+.font-roboto { font-family: 'Roboto', sans-serif !important; }
+.font-lora { font-family: 'Lora', serif !important; }
+.font-playfair { font-family: 'Playfair Display', serif !important; }
+.font-robotomono { font-family: 'Roboto Mono', monospace !important; }
+
+/* Light mode theme overrides */
+.light-theme {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+.light-theme .bg-slate-950 {
+  background-color: #f8fafc !important;
+}
+.light-theme .bg-slate-900 {
+  background-color: #ffffff !important;
+}
+.light-theme .text-slate-100,
+.light-theme .text-slate-200 {
+  color: #0f172a !important;
+}
+.light-theme .text-slate-300 {
+  color: #334155 !important;
+}
+.light-theme .text-slate-400 {
+  color: #475569 !important;
+}
+.light-theme .border-slate-800,
+.light-theme .border-slate-900,
+.light-theme .border-slate-750,
+.light-theme .border-slate-700 {
+  border-color: #cbd5e1 !important;
+}
+.light-theme .bg-slate-950\/40,
+.light-theme .bg-slate-950\/65 {
+  background-color: #f1f5f9 !important;
+}
+.light-theme .hover\:bg-slate-950\/70:hover {
+  background-color: #e2e8f0 !important;
+}
+.light-theme input, 
+.light-theme textarea {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+.light-theme input::placeholder, 
+.light-theme textarea::placeholder {
+  color: #94a3b8 !important;
+}
+.light-theme .bg-slate-950\/20 {
+  background-color: #f1f5f9 !important;
+}
+.light-theme .bg-rose-950\/40 {
+  background-color: #fef2f2 !important;
+}
+.light-theme .border-rose-900\/60 {
+  border-color: #fca5a5 !important;
+}
+.light-theme .text-rose-400 {
+  color: #dc2626 !important;
+}
+.light-theme .bg-emerald-950\/40 {
+  background-color: #f0fdf4 !important;
+}
+.light-theme .border-emerald-900\/60 {
+  border-color: #86efac !important;
+}
+.light-theme .text-emerald-400 {
+  color: #16a34a !important;
+}

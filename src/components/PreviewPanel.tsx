@@ -1,15 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import type { ResumeData } from '../types/resume';
 import { TemplateRenderer } from '../templates/TemplateRenderer';
 import { ZoomIn, ZoomOut, RotateCcw, FileText } from 'lucide-react';
 
 interface PreviewPanelProps {
   resumeData: ResumeData;
+  pageSize: 'letter' | 'a4';
+  onPageSizeChange: (size: 'letter' | 'a4') => void;
 }
 
-export const PreviewPanel: React.FC<PreviewPanelProps> = ({ resumeData }) => {
+export const PreviewPanel: React.FC<PreviewPanelProps> = ({ 
+  resumeData, 
+  pageSize, 
+  onPageSizeChange 
+}) => {
   const [scale, setScale] = useState(0.85); // Default zoom level for comfortable dashboard preview
-  const [pageSize, setPageSize] = useState<'letter' | 'a4'>('letter');
+  const [contentHeight, setContentHeight] = useState(pageSize === 'letter' ? 1056 : 1123);
+  const previewRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const measure = () => {
+      if (previewRef.current) {
+        setContentHeight(previewRef.current.scrollHeight);
+      }
+    };
+    measure();
+    const timer = setTimeout(measure, 100);
+    return () => clearTimeout(timer);
+  }, [resumeData, pageSize]);
 
   const handleZoomIn = () => {
     setScale(prev => Math.min(prev + 0.05, 1.3));
@@ -35,13 +53,13 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({ resumeData }) => {
           <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">Paper Standard</span>
           <div className="bg-slate-950 p-0.5 rounded-lg border border-slate-800/80 flex text-xs font-medium">
             <button
-              onClick={() => setPageSize('letter')}
+              onClick={() => onPageSizeChange('letter')}
               className={`px-2 py-1 rounded-md transition ${pageSize === 'letter' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-slate-200'}`}
             >
               Letter (US)
             </button>
             <button
-              onClick={() => setPageSize('a4')}
+              onClick={() => onPageSizeChange('a4')}
               className={`px-2 py-1 rounded-md transition ${pageSize === 'a4' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-slate-200'}`}
             >
               A4 (MNC Standard)
@@ -87,7 +105,7 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({ resumeData }) => {
         <div 
           style={{ 
             width: `${(pageSize === 'letter' ? 816 : 794) * scale}px`, 
-            height: `${(pageSize === 'letter' ? 1056 : 1123) * scale}px`,
+            height: `${contentHeight * scale}px`,
             position: 'relative'
           }}
           className="shrink-0 mb-10"
@@ -97,7 +115,7 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({ resumeData }) => {
               transform: `scale(${scale})`, 
               transformOrigin: 'top left',
               width: `${pageSize === 'letter' ? 816 : 794}px`,
-              height: `${pageSize === 'letter' ? 1056 : 1123}px`,
+              height: `${contentHeight}px`,
               position: 'absolute',
               left: 0,
               top: 0
@@ -106,9 +124,29 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({ resumeData }) => {
           >
             <div 
               id="resume-preview-root"
-              className="w-full h-full bg-white shadow-2xl rounded-sm text-gray-900 select-text overflow-hidden"
+              ref={previewRef}
+              className="w-full bg-white shadow-2xl rounded-sm text-gray-900 select-text overflow-visible relative"
+              style={{ minHeight: `${pageSize === 'letter' ? 1056 : 1123}px` }}
             >
               <TemplateRenderer data={resumeData} />
+              
+              {/* Visual Page Break indicators for multi-page editing guidance */}
+              {Array.from({ length: Math.max(0, Math.ceil(contentHeight / (pageSize === 'letter' ? 1056 : 1123)) - 1) }).map((_, idx) => {
+                const pageHeightValue = pageSize === 'letter' ? 1056 : 1123;
+                const pageNum = idx + 1;
+                const topPos = pageNum * pageHeightValue;
+                return (
+                  <div 
+                    key={pageNum}
+                    className="absolute left-0 right-0 border-t-2 border-dashed border-rose-400/50 z-50 pointer-events-none print:hidden flex justify-end"
+                    style={{ top: `${topPos}px` }}
+                  >
+                    <span className="bg-rose-100 text-rose-700 text-[9px] px-2 py-0.5 rounded-l border-l border-b border-t border-rose-200 font-bold uppercase tracking-wider -translate-y-1/2 shadow-sm">
+                      Page {pageNum} / Page {pageNum + 1} Break
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>

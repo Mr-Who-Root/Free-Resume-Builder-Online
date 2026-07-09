@@ -47,6 +47,8 @@ export const FormPanel: React.FC<FormPanelProps> = ({ data, onChange }) => {
   // Modal / Dynamic Form States for adding new custom sections
   const [customSectionTitle, setCustomSectionTitle] = useState('');
   const [isAddingCustomSection, setIsAddingCustomSection] = useState(false);
+  const [newFieldLabels, setNewFieldLabels] = useState<Record<string, string>>({});
+  const [newFieldTypes, setNewFieldTypes] = useState<Record<string, 'text' | 'textarea' | 'date' | 'title'>>({});
 
   const toggleSection = (section: string) => {
     setExpandedSections(prev => ({
@@ -197,9 +199,11 @@ export const FormPanel: React.FC<FormPanelProps> = ({ data, onChange }) => {
 
     // 1. Reordering Main Layout Sections
     if (type === 'SECTIONS') {
-      const newOrder = Array.from(data.sectionOrder);
-      const [removed] = newOrder.splice(source.index, 1);
-      newOrder.splice(destination.index, 0, removed);
+      const filteredOrder = data.sectionOrder.filter(id => id !== 'personalInfo');
+      const [removed] = filteredOrder.splice(source.index, 1);
+      filteredOrder.splice(destination.index, 0, removed);
+      
+      const newOrder = ['personalInfo', ...filteredOrder];
       updateField('sectionOrder', newOrder);
       return;
     }
@@ -303,12 +307,7 @@ export const FormPanel: React.FC<FormPanelProps> = ({ data, onChange }) => {
     const newSection: CustomSection = {
       id: sectionId,
       title: customSectionTitle.trim(),
-      fields: [
-        { id: `f1-${Date.now()}`, name: 'title', label: 'Item Header (Title)', type: 'text' },
-        { id: `f2-${Date.now()}`, name: 'date', label: 'Timeline / Date', type: 'text' },
-        { id: `f3-${Date.now()}`, name: 'org', label: 'Sub-heading / Organization', type: 'text' },
-        { id: `f4-${Date.now()}`, name: 'desc', label: 'Details (Markdown enabled)', type: 'textarea' }
-      ],
+      fields: [], // Start with NO fields - fully custom fields layout!
       items: []
     };
 
@@ -321,6 +320,66 @@ export const FormPanel: React.FC<FormPanelProps> = ({ data, onChange }) => {
     setCustomSectionTitle('');
     setIsAddingCustomSection(false);
     setExpandedSections(prev => ({ ...prev, [sectionId]: true }));
+  };
+
+  const addCustomField = (sectionId: string) => {
+    const label = newFieldLabels[sectionId]?.trim();
+    const type = newFieldTypes[sectionId] || 'text';
+    if (!label) return;
+
+    const fieldName = `field_${Date.now()}`;
+    const fieldId = `f-${Date.now()}`;
+
+    const sections = data.customSections.map(cs => {
+      if (cs.id === sectionId) {
+        const updatedFields = [...cs.fields, { id: fieldId, name: fieldName, label, type }];
+        
+        // Initialize the new key in all existing items
+        const updatedItems = cs.items.map(item => ({
+          ...item,
+          [fieldName]: ''
+        }));
+
+        return {
+          ...cs,
+          fields: updatedFields,
+          items: updatedItems
+        };
+      }
+      return cs;
+    });
+
+    updateField('customSections', sections);
+
+    // Reset local states
+    setNewFieldLabels(prev => ({ ...prev, [sectionId]: '' }));
+    setNewFieldTypes(prev => ({ ...prev, [sectionId]: 'text' }));
+  };
+
+  const deleteCustomField = (sectionId: string, fieldId: string) => {
+    const sections = data.customSections.map(cs => {
+      if (cs.id === sectionId) {
+        const targetField = cs.fields.find(f => f.id === fieldId);
+        if (!targetField) return cs;
+
+        const updatedFields = cs.fields.filter(f => f.id !== fieldId);
+        
+        // Clean up from all items
+        const updatedItems = cs.items.map(item => {
+          const copy = { ...item };
+          delete copy[targetField.name];
+          return copy;
+        });
+
+        return {
+          ...cs,
+          fields: updatedFields,
+          items: updatedItems
+        };
+      }
+      return cs;
+    });
+    updateField('customSections', sections);
   };
 
   const addCustomItem = (sectionId: string) => {
@@ -384,22 +443,7 @@ export const FormPanel: React.FC<FormPanelProps> = ({ data, onChange }) => {
     updateField('customSections', sections);
   };
 
-  // Label configuration for dynamic fields (to define what fields a custom section has)
-  const handleCustomFieldLabelChange = (sectionId: string, fieldId: string, newLabel: string) => {
-    const sections = data.customSections.map(cs => {
-      if (cs.id === sectionId) {
-        const fields = cs.fields.map(f => {
-          if (f.id === fieldId) {
-            return { ...f, label: newLabel };
-          }
-          return f;
-        });
-        return { ...cs, fields };
-      }
-      return cs;
-    });
-    updateField('customSections', sections);
-  };
+
 
   return (
     <div className="space-y-6 text-slate-200">
@@ -433,15 +477,15 @@ export const FormPanel: React.FC<FormPanelProps> = ({ data, onChange }) => {
                     {data.sectionOrder
                       .filter(id => id !== 'personalInfo')
                       .map((id, index) => {
-                        // Resolve readable display title
+                        // Resolve readable display title to match accordion headers exactly
                         let displayName = id;
-                        if (id === 'experience') displayName = 'Professional Experience';
+                        if (id === 'experience') displayName = 'Work Experience';
                         else if (id === 'education') displayName = 'Education';
-                        else if (id === 'skills') displayName = 'Technical Skills';
+                        else if (id === 'skills') displayName = 'Skills Categories';
                         else if (id === 'projects') displayName = 'Projects';
                         else {
                           const cs = data.customSections.find(s => s.id === id);
-                          if (cs) displayName = `Custom: ${cs.title}`;
+                          if (cs) displayName = `${cs.title} (Custom)`;
                         }
 
                         return (
@@ -1333,22 +1377,64 @@ export const FormPanel: React.FC<FormPanelProps> = ({ data, onChange }) => {
 
             {expandedSections[cs.id] && (
               <div className="p-4 space-y-4 border-t border-slate-850">
-                
-                {/* Customizable field labels */}
-                <div className="bg-slate-950/50 border border-slate-850 p-3 rounded-lg space-y-2">
-                  <div className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide">Configure Custom Field Labels:</div>
-                  <div className="grid grid-cols-2 gap-2">
-                    {cs.fields.map(f => (
-                      <div key={f.id} className="space-y-0.5">
-                        <label className="text-[9px] text-slate-500 font-semibold uppercase">{f.name} Label</label>
-                        <input
-                          type="text"
-                          value={f.label}
-                          onChange={(e) => handleCustomFieldLabelChange(cs.id, f.id, e.target.value)}
-                          className="w-full text-[11px] bg-slate-950 border border-slate-800 rounded px-1.5 py-1 text-slate-300 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                        />
-                      </div>
-                    ))}
+                             {/* Dynamic custom fields manager */}
+                <div className="bg-slate-950/40 border border-slate-850 p-3.5 rounded-xl space-y-3">
+                  <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Custom Section Fields Setup:</div>
+                  
+                  {/* List of existing custom fields */}
+                  {cs.fields.length > 0 ? (
+                    <div className="flex flex-wrap gap-2">
+                      {cs.fields.map(f => (
+                        <div key={f.id} className="flex items-center gap-1.5 px-2 py-1 bg-slate-900 border border-slate-850 rounded-lg text-xs text-slate-300">
+                          <span className="font-semibold text-indigo-400">[{f.type === 'textarea' ? 'desc' : f.type}]</span>
+                          <span>{f.label}</span>
+                          <button 
+                            type="button"
+                            onClick={() => deleteCustomField(cs.id, f.id)}
+                            className="text-slate-500 hover:text-rose-400 transition"
+                            title="Delete Field"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-xs text-slate-500 italic">No custom fields defined yet. Add fields below to build your form!</p>
+                  )}
+
+                  {/* Add field form */}
+                  <div className="pt-2 border-t border-slate-850/80 flex flex-wrap sm:flex-nowrap items-end gap-2 text-xs">
+                    <div className="flex-1 min-w-0 space-y-1">
+                      <label className="text-[10px] text-slate-500 font-semibold uppercase block">Field Name</label>
+                      <input 
+                        type="text"
+                        placeholder="e.g. Project Link, Website"
+                        value={newFieldLabels[cs.id] || ''}
+                        onChange={(e) => setNewFieldLabels(prev => ({ ...prev, [cs.id]: e.target.value }))}
+                        className="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                      />
+                    </div>
+                    <div className="w-full sm:w-44 space-y-1">
+                      <label className="text-[10px] text-slate-500 font-semibold uppercase block">Field Type</label>
+                      <select
+                        value={newFieldTypes[cs.id] || 'text'}
+                        onChange={(e) => setNewFieldTypes(prev => ({ ...prev, [cs.id]: e.target.value as any }))}
+                        className="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg px-2 py-1.5 text-slate-350 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                      >
+                        <option value="title">Header / Main Title</option>
+                        <option value="text">Sub-heading / Normal Text</option>
+                        <option value="date">Timeline / Date</option>
+                        <option value="textarea">Description (Markdown)</option>
+                      </select>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => addCustomField(cs.id)}
+                      className="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg transition shrink-0"
+                    >
+                      Add Field
+                    </button>
                   </div>
                 </div>
 

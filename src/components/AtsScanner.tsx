@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import type { ResumeData } from '../types/resume';
 import { scanAts } from '../utils/ats';
 import { 
@@ -12,11 +12,15 @@ import {
 
 interface AtsScannerProps {
   resumeData: ResumeData;
+  jobDescription: string;
+  onJobDescriptionChange: (val: string) => void;
 }
 
-export const AtsScanner: React.FC<AtsScannerProps> = ({ resumeData }) => {
-  const [jobDescription, setJobDescription] = useState('');
-  
+export const AtsScanner: React.FC<AtsScannerProps> = ({ 
+  resumeData, 
+  jobDescription, 
+  onJobDescriptionChange 
+}) => {
   const report = scanAts(resumeData, jobDescription);
 
   const getScoreColor = (score: number) => {
@@ -106,10 +110,14 @@ export const AtsScanner: React.FC<AtsScannerProps> = ({ resumeData }) => {
             id="jd-input"
             rows={4}
             value={jobDescription}
-            onChange={(e) => setJobDescription(e.target.value)}
+            onChange={(e) => onJobDescriptionChange(e.target.value)}
             placeholder="Paste description requirements (e.g. 'We are looking for a React developer with TypeScript, Docker, and AWS experience...')"
             className="w-full text-sm bg-slate-950 border border-slate-800 rounded-lg p-3 text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 resize-y"
           />
+          <p className="text-[11px] text-amber-500/85 leading-normal italic mt-1.5 flex items-start gap-1">
+            <span>⚠️</span>
+            <span>Note: This is a rule-based matching tool and does not use AI. The results are automated estimations and may contain inaccuracies or mismatches.</span>
+          </p>
         </div>
 
         {report.keywordMatch && (

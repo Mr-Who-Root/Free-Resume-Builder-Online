@@ -52,7 +52,7 @@ export interface CustomFieldSchema {
   id: string;
   name: string; // the key in the item object, e.g. "title", "date", "description"
   label: string; // e.g. "Role/Title", "Date", "Details"
-  type: 'text' | 'textarea' | 'date';
+  type: 'text' | 'textarea' | 'date' | 'title';
 }
 
 export interface CustomSection {

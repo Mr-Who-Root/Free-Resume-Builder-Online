@@ -6,10 +6,9 @@ import { AtsScanner } from './AtsScanner';
 import { downloadPdf } from '../utils/pdf';
 import { downloadDoc } from '../utils/doc';
 import { SAMPLE_RESUME_DATA } from '../utils/storage';
+
 import {
   Download,
-  FileCode,
-  Upload,
   RotateCcw,
   Sparkles,
   Settings,
@@ -17,6 +16,25 @@ import {
   ChevronDown,
   Check,
 } from 'lucide-react';
+
+const GithubIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+  <svg
+    viewBox="0 0 24 24"
+    width="24"
+    height="24"
+    stroke="currentColor"
+    strokeWidth="2"
+    fill="none"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={props.className}
+    style={props.style}
+    {...props}
+  >
+    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+  </svg>
+);
+
 
 const templateOptions = [
   { value: 'tech-classic',    label: 'SV Classic (Silicon Valley)',     group: 'De Facto Tech Standard' },
@@ -34,9 +52,12 @@ const templateOptions = [
 ];
 
 const fontOptions = [
-  { value: 'sans',  label: 'Inter (Sans-serif)' },
-  { value: 'serif', label: 'Georgia (Serif)'     },
-  { value: 'mono',  label: 'Roboto Mono (Mono)'  },
+  { value: 'inter',       label: 'Inter (Modern & Clean)'       },
+  { value: 'outfit',      label: 'Outfit (Elegant & Geometric)' },
+  { value: 'roboto',      label: 'Roboto (Standard & Clean)'    },
+  { value: 'lora',        label: 'Lora (Classic Editorial)'     },
+  { value: 'playfair',    label: 'Playfair Display (Premium)'   },
+  { value: 'robotomono',  label: 'Roboto Mono (Tech & Clean)'   },
 ];
 
 const fontSizeOptions = [
@@ -47,12 +68,16 @@ const fontSizeOptions = [
 ];
 
 const colorOptions = [
-  { value: 'navy',     label: 'Navy Blue'     },
-  { value: 'slate',    label: 'Slate Steel'   },
-  { value: 'emerald',  label: 'Emerald'       },
-  { value: 'indigo',   label: 'Royal Purple'  },
-  { value: 'crimson',  label: 'Crimson Rose'  },
-  { value: 'charcoal', label: 'Charcoal Dark' },
+  { value: 'navy',     label: 'Navy Blue',     color: '#1e3a8a' },
+  { value: 'slate',    label: 'Slate Steel',   color: '#475569' },
+  { value: 'emerald',  label: 'Emerald',       color: '#065f46' },
+  { value: 'indigo',   label: 'Royal Purple',  color: '#4f46e5' },
+  { value: 'crimson',  label: 'Crimson Rose',  color: '#b91c1c' },
+  { value: 'charcoal', label: 'Charcoal Dark', color: '#1f2937' },
+  { value: 'teal',     label: 'Teal Forest',   color: '#0f766e' },
+  { value: 'amber',    label: 'Amber Gold',    color: '#b45309' },
+  { value: 'rose',     label: 'Rose Petal',    color: '#be123c' },
+  { value: 'violet',   label: 'Violet Dusk',   color: '#6d28d9' },
 ];
 
 const marginOptions = [
@@ -61,7 +86,12 @@ const marginOptions = [
   { value: 'large',  label: 'Spacious Margins' },
 ];
 
-interface SelectOption { value: string; label: string; group?: string; }
+interface SelectOption {
+  value: string;
+  label: string;
+  group?: string;
+  color?: string;
+}
 
 interface CustomSelectProps {
   value: string;
@@ -97,13 +127,21 @@ const CustomSelect: React.FC<CustomSelectProps> = ({ value, options, onChange, g
   }
 
   return (
-    <div className="relative w-full" ref={containerRef}>
+    <div className="relative w-full" ref={containerRef} style={{ zIndex: open ? 50 : undefined }}>
       <button
         type="button"
         onClick={() => setOpen(o => !o)}
         className="w-full flex items-center justify-between text-xs bg-slate-950 border border-slate-800 rounded-lg px-3 py-2.5 text-slate-200 hover:border-indigo-500/60 transition font-medium gap-1.5"
       >
-        <span className="truncate min-w-0">{selected?.label ?? value}</span>
+        <span className="truncate min-w-0 flex items-center gap-2">
+          {selected?.color && (
+            <span 
+              className="w-3 h-3 rounded-full shrink-0 border border-slate-800/60" 
+              style={{ backgroundColor: selected.color }} 
+            />
+          )}
+          <span>{selected?.label ?? value}</span>
+        </span>
         <ChevronDown className={`w-3.5 h-3.5 text-slate-500 shrink-0 transition-transform duration-150 ${open ? 'rotate-180' : ''}`} />
       </button>
 
@@ -132,7 +170,15 @@ const CustomSelect: React.FC<CustomSelectProps> = ({ value, options, onChange, g
                             : 'text-slate-300 hover:bg-slate-800 hover:text-white'
                         }`}
                       >
-                        <span>{opt.label}</span>
+                        <span className="flex items-center gap-2">
+                          {opt.color && (
+                            <span 
+                              className="w-3 h-3 rounded-full shrink-0 border border-slate-750" 
+                              style={{ backgroundColor: opt.color }} 
+                            />
+                          )}
+                          <span>{opt.label}</span>
+                        </span>
                         {opt.value === value && <Check className="w-3 h-3 text-indigo-400 shrink-0" />}
                       </button>
                     ))}
@@ -149,7 +195,15 @@ const CustomSelect: React.FC<CustomSelectProps> = ({ value, options, onChange, g
                         : 'text-slate-300 hover:bg-slate-800 hover:text-white'
                     }`}
                   >
-                    <span>{opt.label}</span>
+                    <span className="flex items-center gap-2">
+                      {opt.color && (
+                        <span 
+                          className="w-3 h-3 rounded-full shrink-0 border border-slate-750" 
+                          style={{ backgroundColor: opt.color }} 
+                        />
+                      )}
+                      <span>{opt.label}</span>
+                    </span>
                     {opt.value === value && <Check className="w-3 h-3 text-indigo-400 shrink-0" />}
                   </button>
                 ))
@@ -170,43 +224,22 @@ export const Layout: React.FC<LayoutProps> = ({ data, onChange }) => {
   const [activeTab, setActiveTab] = useState<'editor' | 'ats'>('editor');
   const [showStyleDrawer, setShowStyleDrawer] = useState(false);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [pageSize, setPageSize] = useState<'letter' | 'a4'>('letter');
+  const [jobDescription, setJobDescription] = useState('');
+  const [showStarPrompt, setShowStarPrompt] = useState<{ type: 'pdf' | 'doc' } | null>(null);
 
   const handleStyleChange = (key: keyof ResumeData['styles'], value: string) => {
     onChange({ ...data, styles: { ...data.styles, [key]: value } });
   };
 
-  const handlePdfDownload = () =>
-    downloadPdf('resume-preview-root', `${data.personalInfo.name.replace(/\s+/g, '_')}_Resume.pdf`);
+  const handlePdfDownloadActual = () =>
+    downloadPdf('resume-preview-root', `${data.personalInfo.name.replace(/\s+/g, '_')}_Resume.pdf`, pageSize);
 
-  const handleDocDownload = () =>
+  const handleDocDownloadActual = () =>
     downloadDoc('resume-preview-root', `${data.personalInfo.name.replace(/\s+/g, '_')}_Resume.doc`);
 
-  const handleJsonExport = () => {
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${data.personalInfo.name.replace(/\s+/g, '_')}_backup.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
-
-  const handleJsonImport = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = ev => {
-      try {
-        const parsed = JSON.parse(ev.target?.result as string);
-        if (parsed?.personalInfo && parsed?.styles) onChange(parsed);
-      } catch { /* ignore */ }
-    };
-    reader.readAsText(file);
-    e.target.value = '';
-  };
+  const handlePdfDownload = () => setShowStarPrompt({ type: 'pdf' });
+  const handleDocDownload = () => setShowStarPrompt({ type: 'doc' });
 
   const handleResetData = () => setShowResetConfirm(true);
 
@@ -214,7 +247,7 @@ export const Layout: React.FC<LayoutProps> = ({ data, onChange }) => {
     <div className="h-full bg-slate-950 text-slate-100 flex flex-col font-sans overflow-hidden">
 
       {/* Header */}
-      <header className="shrink-0 bg-slate-900 border-b border-slate-800 z-50 px-4 md:px-6 py-3 flex flex-wrap md:flex-nowrap justify-between items-center gap-3">
+      <header className="shrink-0 bg-slate-900 border-b border-slate-800 z-[100] px-4 md:px-6 py-3 flex flex-wrap md:flex-nowrap justify-between items-center gap-3">
         <div className="flex items-center gap-2 shrink-0">
           <div className="bg-indigo-600 p-2 rounded-xl text-white shadow-md shadow-indigo-600/35">
             <Sparkles className="w-5 h-5 animate-pulse" />
@@ -260,31 +293,23 @@ export const Layout: React.FC<LayoutProps> = ({ data, onChange }) => {
           </button>
 
           <button
-            onClick={() => fileInputRef.current?.click()}
-            className="flex items-center gap-1.5 text-xs px-3 py-2 bg-slate-950 border border-slate-800 hover:border-slate-700 text-slate-300 rounded-lg transition"
-            title="Import JSON backup"
-          >
-            <Upload className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Import JSON</span>
-          </button>
-          <input type="file" ref={fileInputRef} onChange={handleJsonImport} accept=".json" className="hidden" />
-
-          <button
-            onClick={handleJsonExport}
-            className="flex items-center gap-1.5 text-xs px-3 py-2 bg-slate-950 border border-slate-800 hover:border-slate-700 text-slate-300 rounded-lg transition"
-            title="Export as JSON backup"
-          >
-            <FileCode className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Export JSON</span>
-          </button>
-
-          <button
             onClick={handleResetData}
             className="p-2 bg-slate-950 border border-slate-800 hover:border-rose-800/60 hover:text-rose-400 rounded-lg transition"
             title="Reset to sample template"
           >
             <RotateCcw className="w-3.5 h-3.5" />
           </button>
+
+          <a
+            href="https://github.com/Mr-Who-Root/Free-Resume-Builder-Online"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 text-xs px-3 py-2 bg-slate-950 border border-slate-800 hover:border-slate-750 text-slate-300 rounded-lg transition hover:text-indigo-400"
+            title="View GitHub Repository"
+          >
+            <GithubIcon className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">GitHub</span>
+          </a>
 
           <div className="flex items-center bg-indigo-600 rounded-lg overflow-hidden shadow-lg shadow-indigo-600/20">
             <button
@@ -308,10 +333,10 @@ export const Layout: React.FC<LayoutProps> = ({ data, onChange }) => {
 
       {/* Style Settings Drawer */}
       {showStyleDrawer && (
-        <div className="shrink-0 bg-slate-900 border-b border-slate-800 px-4 md:px-6 py-4 animate-slideDown relative z-45">
+        <div className="shrink-0 bg-slate-900 border-b border-slate-800 px-4 md:px-6 py-4 animate-slideDown relative z-[90]">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="md:col-span-2 space-y-1.5">
-              <label className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Template (12 options)</label>
+              <label className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Template</label>
               <CustomSelect
                 value={data.styles.templateId}
                 options={templateOptions}
@@ -349,16 +374,50 @@ export const Layout: React.FC<LayoutProps> = ({ data, onChange }) => {
         >
           {activeTab === 'editor'
             ? <FormPanel data={data} onChange={onChange} />
-            : <AtsScanner resumeData={data} />
+            : <AtsScanner 
+                resumeData={data} 
+                jobDescription={jobDescription} 
+                onJobDescriptionChange={setJobDescription} 
+              />
           }
         </div>
 
         {/* RIGHT: PDF Preview — PreviewPanel manages its own internal scroll */}
         <div className="flex-1 flex flex-col min-h-0 bg-slate-950" style={{ minHeight: 0 }}>
-          <PreviewPanel resumeData={data} />
+          <PreviewPanel 
+            resumeData={data} 
+            pageSize={pageSize} 
+            onPageSizeChange={setPageSize} 
+          />
         </div>
 
       </main>
+
+      {/* Footer */}
+      <footer className="shrink-0 bg-slate-900 border-t border-slate-800 px-6 py-3.5 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-slate-400 z-40">
+        <div className="flex items-center gap-4">
+          <a
+            href="https://github.com/Mr-Who-Root/Free-Resume-Builder-Online"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1 hover:text-indigo-400 transition"
+          >
+            <GithubIcon className="w-3.5 h-3.5" />
+            <span>GitHub Repository</span>
+          </a>
+        </div>
+        <div>
+          Made with ❤️ by{' '}
+          <a
+            href="https://github.com/Mr-Who-Root"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-indigo-400 font-semibold transition"
+          >
+            Mr-Who
+          </a>
+        </div>
+      </footer>
 
       {/* Reset confirmation modal */}
       {showResetConfirm && (
@@ -380,6 +439,54 @@ export const Layout: React.FC<LayoutProps> = ({ data, onChange }) => {
                 className="px-4 py-2 text-xs bg-rose-600 hover:bg-rose-700 text-white rounded-lg font-semibold transition"
               >
                 Yes, Reset
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Star Prompt modal alert */}
+      {showStarPrompt && (
+        <div className="fixed inset-0 bg-black/65 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-700 rounded-2xl p-6 max-w-md w-full shadow-2xl animate-slideDown space-y-4">
+            <div className="flex items-center gap-2.5 text-yellow-400">
+              <Sparkles className="w-5 h-5 animate-pulse" />
+              <h3 className="text-base font-bold text-white">Give us a Star on GitHub! ⭐</h3>
+            </div>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              If you find this Resume Builder helpful, please give our repository a star! It helps other developers discover this project and supports further open-source tools.
+            </p>
+            <div className="bg-slate-950 p-3 rounded-lg border border-slate-850 flex justify-between items-center text-xs">
+              <div className="font-medium text-slate-300">Mr-Who-Root/Free-Resume-Builder-Online</div>
+              <a
+                href="https://github.com/Mr-Who-Root/Free-Resume-Builder-Online"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded font-semibold transition flex items-center gap-1 shadow shadow-indigo-600/30"
+              >
+                <GithubIcon className="w-3.5 h-3.5" />
+                <span>Give Star ⭐</span>
+              </a>
+            </div>
+            <div className="flex gap-3 justify-end pt-2 border-t border-slate-800">
+              <button
+                onClick={() => setShowStarPrompt(null)}
+                className="px-4 py-2 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg font-semibold transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  if (showStarPrompt.type === 'pdf') {
+                    handlePdfDownloadActual();
+                  } else {
+                    handleDocDownloadActual();
+                  }
+                  setShowStarPrompt(null);
+                }}
+                className="px-4 py-2 text-xs bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold transition"
+              >
+                Download
               </button>
             </div>
           </div>

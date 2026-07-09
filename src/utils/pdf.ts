@@ -2,7 +2,7 @@
  * Prints the resume element directly by writing it to a temporary hidden iframe.
  * This guarantees sharp, selectable vector text and respects multi-page breaks.
  */
-export const downloadPdf = (resumeElementId: string, filename: string): void => {
+export const downloadPdf = (resumeElementId: string, filename: string, pageSize: 'letter' | 'a4' = 'letter'): void => {
   const element = document.getElementById(resumeElementId);
   if (!element) {
     console.error("Resume element not found: " + resumeElementId);
@@ -32,32 +32,37 @@ export const downloadPdf = (resumeElementId: string, filename: string): void => 
     iframeDoc.head.appendChild(el.cloneNode(true));
   });
 
+  const pageWidth = pageSize === 'letter' ? '816px' : '794px';
+
   // Ensure high quality print styles and page settings are applied
   const printStyle = iframeDoc.createElement('style');
   printStyle.textContent = `
     @page {
       margin: 0;
-      size: letter; /* standard US Letter. A4 also works, browser print dialog lets user toggle */
+      size: ${pageSize === 'letter' ? 'letter' : 'A4'};
     }
     html, body {
       margin: 0 !important;
       padding: 0 !important;
-      width: 100% !important;
       background: white !important;
       color: black !important;
       -webkit-print-color-adjust: exact !important;
       print-color-adjust: exact !important;
     }
     
+    .print-container {
+      width: ${pageWidth} !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
     /* Ensure the inner paper has no shadows or outer margins when printing */
     .resume-paper {
       box-shadow: none !important;
       border: none !important;
       margin: 0 !important;
       width: 100% !important;
-      max-width: 100% !important;
       min-height: 0 !important;
-      padding: 0 !important;
     }
 
     /* Print-specific layout fixes */

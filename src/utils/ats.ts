@@ -35,13 +35,51 @@ const COMMON_STOP_WORDS = new Set([
 
 // Common action verbs and general words that aren't specific technical keywords
 const GENERAL_WORDS = new Set([
+  // Basic verbs & descriptors
   'develop', 'developer', 'developing', 'management', 'manage', 'manager', 'managing', 'lead', 'leader', 'leading',
   'work', 'worked', 'working', 'build', 'building', 'built', 'create', 'creating', 'created', 'design', 'designing',
   'designed', 'responsibilities', 'responsible', 'project', 'projects', 'experience', 'experiences', 'team', 'teams',
   'skill', 'skills', 'role', 'roles', 'ability', 'abilities', 'strong', 'excellent', 'good', 'years', 'highly', 'motivated',
   'engineering', 'engineer', 'engineers', 'application', 'applications', 'software', 'system', 'systems', 'platform',
   'platforms', 'process', 'processes', 'solution', 'solutions', 'product', 'products', 'new', 'tools', 'using', 'used',
-  'technology', 'technologies', 'environment', 'high', 'quality', 'technical'
+  'technology', 'technologies', 'environment', 'high', 'quality', 'technical', 'basic', 'advanced', 'expert',
+  
+  // Job posting terms & sections
+  'bachelor', 'bachelor\'s', 'master', 'master\'s', 'phd', 'degree', 'education', 'field', 'study', 'science',
+  'minimum', 'required', 'preferred', 'qualification', 'qualifications', 'requirements', 'duties', 'tasks',
+  'assigned', 'related', 'focus', 'focused', 'deliver', 'deliverables', 'drive', 'driven', 'implement', 'implementation',
+  'provide', 'providing', 'support', 'operational', 'supportive', 'continuity',
+  
+  // Action verbs (general)
+  'apply', 'applied', 'analyzing', 'analyze', 'analyzed', 'configure', 'configuration', 'configurations', 'maintain',
+  'optimization', 'optimizing', 'optimize', 'continuously', 'continuous', 'refine', 'refinement', 'improve',
+  'improvement', 'improvements', 'reduce', 'reducing', 'enhanced', 'enhance', 'enhancing', 'ensure', 'ensuring',
+  'evaluate', 'evaluation', 'evaluating', 'recommend', 'recommending', 'recommendations', 'investigate', 'investigation',
+  'investigating', 'determine', 'determining', 'distinguish', 'distinguishing', 'perform', 'performing', 'triage',
+  'escalate', 'escalating', 'escalated', 'contribute', 'contribution', 'contributions', 'support', 'supporting',
+  'troubleshoot', 'troubleshooting', 'resolve', 'resolving', 'resolution', 'adjust', 'adjusting', 'balance',
+  'balancing', 'collaborate', 'collaboration', 'collaborating', 'collaborative', 'diagnose', 'diagnosing',
+  'serve', 'serving', 'identify', 'identifying', 'communicate', 'communication', 'communicating', 'translate',
+  'translating', 'demonstrate', 'demonstrating', 'incorporate', 'incorporating', 'participate', 'participating',
+  'respond', 'responding', 'response', 'responses', 'meet', 'meeting', 'deliver', 'delivering', 'prepare', 'preparing',
+  'present', 'presenting', 'write', 'writing', 'execute', 'executing', 'execution',
+  
+  // General business / corporate vocabulary
+  'alert', 'alerts', 'analysis', 'visibility', 'capabilities', 'coverage', 'health', 'telemetry', 'integrity',
+  'environments', 'enhancements', 'action', 'actions', 'context', 'risk', 'risks', 'activity', 'activities',
+  'data', 'source', 'sources', 'log', 'logs', 'traffic', 'behavior', 'behaviors', 'judgment', 'cause', 'coordination',
+  'incident', 'incidents', 'control', 'controls', 'access', 'disruptions', 'disruption', 'positives', 'positive',
+  'false', 'conflict', 'conflicts', 'decision', 'decisions', 'need', 'needs', 'knowledge', 'multiple', 'resiliency',
+  'resource', 'resources', 'peer', 'peers', 'point', 'points', 'failure', 'failures', 'gap', 'gaps', 'effectiveness',
+  'noise', 'playbook', 'playbooks', 'situation', 'situations', 'guidance', 'incomplete', 'findings', 'clearly',
+  'stakeholder', 'stakeholders', 'observation', 'observations', 'impact', 'listening', 'perspective', 'perspectives',
+  'solutions-oriented', 'approach', 'approaches', 'direction', 'directions', 'rotation', 'rotations', 'hour', 'hours',
+  'production-impacting', 'after-hours', 'on-call', 'related', 'various', 'other', 'others', 'etc', 'across', 'within',
+  'best', 'practice', 'practices', 'success', 'successful', 'detail', 'detail-oriented', 'written', 'verbal',
+  'time', 'timely', 'structured', 'manner', 'efficient', 'efficiently', 'efficiency', 'resilient',
+  'call', 'calls', 'eg', 'e.g', 'information', 'issue', 'issues', 'anomalous', 'appropriate', 'available', 'based', 
+  'business', 'clear', 'effective', 'email', 'existing', 'five', 'eight', 'generated', 'impacting', 'including', 
+  'independent'
 ]);
 
 /**
@@ -151,25 +189,100 @@ export const scanAts = (data: ResumeData, jobDescription: string = ''): AtsRepor
 
   // 4. Keyword Matcher Logic
   if (jobDescription.trim()) {
-    // Helper to tokenize text and extract potential keywords
     const extractKeywords = (text: string): string[] => {
-      const rawWords = text.match(/[a-zA-Z\d+#.]+/g) || [];
-      return rawWords
-        .map(w => w.trim().replace(/\.+$/, ''))
-        .filter(w => {
-          const lower = w.toLowerCase();
-          // Filter out stop words, general words, numbers, and short noise
-          return (
-            lower.length >= 2 &&
-            !COMMON_STOP_WORDS.has(lower) &&
-            !GENERAL_WORDS.has(lower) &&
-            isNaN(Number(lower))
-          );
-        });
+      // Clean punctuation except for symbols like +, #, ., -
+      const cleanText = text.replace(/[,\/#!$%\^&\*;:{}=\_`~()]/g, ' ');
+      const tokens = cleanText.split(/\s+/).map(t => t.trim().replace(/\.+$/, '')).filter(Boolean);
+
+      const list: string[] = [];
+
+      const isStopOrGeneral = (w: string) => {
+        const lower = w.toLowerCase();
+        return COMMON_STOP_WORDS.has(lower) || GENERAL_WORDS.has(lower);
+      };
+
+      // Specific core technical keywords to always check
+      const TECH_KEYWORDS_DICTIONARY = new Set([
+        'react', 'typescript', 'javascript', 'node.js', 'nodejs', 'python', 'java', 'c++', 'c#', 'ruby', 'php', 'swift', 'kotlin',
+        'go', 'golang', 'rust', 'docker', 'kubernetes', 'aws', 'azure', 'gcp', 'cloud', 'linux', 'unix', 'git', 'github',
+        'sql', 'nosql', 'postgresql', 'mysql', 'mongodb', 'redis', 'graphql', 'rest', 'api', 'apis', 'microservices',
+        'ci/cd', 'jenkins', 'terraform', 'ansible', 'html', 'css', 'sass', 'tailwind', 'bootstrap', 'jquery', 'redux',
+        'next.js', 'nextjs', 'vue', 'angular', 'svelte', 'express', 'flask', 'django', 'spring', 'laravel', 'security',
+        'cybersecurity', 'network', 'telemetry', 'endpoint', 'identity', 'vulnerability', 'incident', 'response', 'triage',
+        'automation', 'scripting', 'compliance', 'audit', 'auditing', 'iam', 'sso', 'saml', 'oauth', 'firewall', 'siem', 'soc',
+        'ids', 'ips', 'splunk', 'wireshark', 'owasp', 'pen', 'penetration', 'forensics', 'cryptography', 'encryption',
+        'detection', 'ioa', 'ioc', 'mttd', 'mttr'
+      ]);
+
+      for (let i = 0; i < tokens.length; i++) {
+        const token = tokens[i];
+        const lowerToken = token.toLowerCase();
+
+        // Technical word or Capitalized noun (non-general)
+        if (
+          TECH_KEYWORDS_DICTIONARY.has(lowerToken) ||
+          (/^[A-Z][a-zA-Z\d+#.-]*$/.test(token) && !isStopOrGeneral(token) && token.length >= 2)
+        ) {
+          list.push(token);
+        }
+
+        // Years of experience (e.g. "8 years" or "8 year")
+        if (i < tokens.length - 1) {
+          const nextToken = tokens[i + 1];
+          if (/^\d+$/.test(token) && /^years?$/i.test(nextToken)) {
+            list.push(`${token} years experience`);
+          }
+        }
+
+        // Two-word phrases (bigrams)
+        if (i < tokens.length - 1) {
+          const next = tokens[i + 1];
+          if (!isStopOrGeneral(token) && !isStopOrGeneral(next) && isNaN(Number(token)) && isNaN(Number(next))) {
+            const phrase = `${token} ${next}`;
+            if (
+              phrase.match(/[A-Z]/) ||
+              TECH_KEYWORDS_DICTIONARY.has(token.toLowerCase()) ||
+              TECH_KEYWORDS_DICTIONARY.has(next.toLowerCase())
+            ) {
+              list.push(phrase);
+            }
+          }
+        }
+
+        // Three-word phrases (trigrams)
+        if (i < tokens.length - 2) {
+          const next1 = tokens[i + 1];
+          const next2 = tokens[i + 2];
+          if (
+            !isStopOrGeneral(token) &&
+            !isStopOrGeneral(next1) &&
+            !isStopOrGeneral(next2) &&
+            isNaN(Number(token)) &&
+            isNaN(Number(next1)) &&
+            isNaN(Number(next2))
+          ) {
+            const phrase = `${token} ${next1} ${next2}`;
+            if (phrase.match(/[A-Z]/)) {
+              list.push(phrase);
+            }
+          }
+        }
+      }
+
+      return list;
     };
 
-    // Extract unique keywords from the job description
-    const jdKeywords = Array.from(new Set(extractKeywords(jobDescription)));
+    // Extract unique keywords from the job description (case-insensitive deduplication)
+    const rawKeywords = extractKeywords(jobDescription);
+    const seen = new Set<string>();
+    const jdKeywords: string[] = [];
+    rawKeywords.forEach(w => {
+      const lower = w.toLowerCase();
+      if (!seen.has(lower)) {
+        seen.add(lower);
+        jdKeywords.push(w);
+      }
+    });
 
     // Aggregate entire resume text into a single searchable pool
     let resumePool = [
@@ -191,13 +304,19 @@ export const scanAts = (data: ResumeData, jobDescription: string = ''): AtsRepor
     // Score checks
     jdKeywords.forEach(keyword => {
       const lowerKeyword = keyword.toLowerCase();
-      // Escape special regex characters
       const escaped = lowerKeyword.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
       
-      // Use boundaries if it's a letters-only word, otherwise use literal search
-      const regex = /^[a-z]+$/i.test(lowerKeyword)
-        ? new RegExp(`\\b${escaped}\\b`, 'i')
-        : new RegExp(escaped, 'i');
+      let regex: RegExp;
+      if (lowerKeyword.endsWith('years experience')) {
+        const yearsNum = lowerKeyword.split(' ')[0];
+        // Match numbers, plurals, abbreviations, and "+": e.g., "8 years", "8+ years", "8 yrs", "8+ yrs"
+        regex = new RegExp(`\\b${yearsNum}\\+?\\s*(years?|yrs?)\\b`, 'i');
+      } else {
+        // Standard check
+        regex = /^[a-z]+$/i.test(lowerKeyword)
+          ? new RegExp(`\\b${escaped}\\b`, 'i')
+          : new RegExp(escaped, 'i');
+      }
 
       if (regex.test(resumePool)) {
         matched.push(keyword);

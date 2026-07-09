@@ -164,10 +164,18 @@ export const MinimalistExecutive: React.FC<TemplateProps> = ({ data, styleUtils 
       {renderSectionHeader(section.title)}
       <div className="space-y-4">
         {section.items.map((item) => {
-          const titleVal = item.title || item.name || Object.values(item)[1] || '';
-          const dateVal = item.date || item.year || '';
-          const orgVal = item.org || item.publisher || item.subtitle || '';
-          const descVal = item.desc || item.description || item.details || '';
+          const titleField = section.fields.find(f => f.type === 'title') || section.fields[0];
+          const dateField = section.fields.find(f => f.type === 'date');
+          const descriptionFields = section.fields.filter(f => f.type === 'textarea');
+          
+          const metaFields = section.fields.filter(f => 
+            f.id !== titleField?.id && 
+            f.id !== dateField?.id && 
+            f.type !== 'textarea'
+          );
+
+          const titleVal = titleField ? item[titleField.name] : '';
+          const dateVal = dateField ? item[dateField.name] : '';
 
           return (
             <div key={item.id} className="w-full space-y-1">
@@ -175,12 +183,37 @@ export const MinimalistExecutive: React.FC<TemplateProps> = ({ data, styleUtils 
                 <span className="text-gray-900 text-sm">{titleVal}</span>
                 {dateVal && <span className="text-gray-500 font-normal italic">{dateVal}</span>}
               </div>
-              {orgVal && <div className="text-xs text-gray-600 font-medium">{orgVal}</div>}
-              {descVal && (
-                <div className="text-gray-800">
-                  <MarkdownText text={descVal} className="text-xs text-justify" />
+              
+              {metaFields.length > 0 && (
+                <div className="text-xs text-gray-600 font-medium flex flex-wrap gap-x-2.5 gap-y-0.5">
+                  {metaFields.map(f => {
+                    const val = item[f.name];
+                    if (!val) return null;
+                    if (/^https?:\/\//i.test(val)) {
+                      return (
+                        <a key={f.id} href={val} target="_blank" rel="noopener noreferrer" className="underline hover:text-indigo-600">
+                          {f.label}: {val}
+                        </a>
+                      );
+                    }
+                    return (
+                      <span key={f.id}>
+                        <span className="font-semibold">{f.label}:</span> {val}
+                      </span>
+                    );
+                  })}
                 </div>
               )}
+
+              {descriptionFields.map(f => {
+                const val = item[f.name];
+                if (!val) return null;
+                return (
+                  <div key={f.id} className="text-gray-800">
+                    <MarkdownText text={val} className="text-xs text-justify" />
+                  </div>
+                );
+              })}
             </div>
           );
         })}
