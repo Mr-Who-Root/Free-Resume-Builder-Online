@@ -15,6 +15,8 @@ import {
   Briefcase,
   ChevronDown,
   Check,
+  Upload,
+  FileJson
 } from 'lucide-react';
 
 const GithubIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
@@ -227,6 +229,35 @@ export const Layout: React.FC<LayoutProps> = ({ data, onChange }) => {
   const [pageSize, setPageSize] = useState<'letter' | 'a4'>('letter');
   const [jobDescription, setJobDescription] = useState('');
   const [showStarPrompt, setShowStarPrompt] = useState<{ type: 'pdf' | 'doc' } | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleJsonExport = () => {
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${data.personalInfo.name.trim().replace(/\s+/g, '_') || 'resume'}_backup.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleJsonImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const parsed = JSON.parse(ev.target?.result as string);
+        if (parsed?.personalInfo && parsed?.styles) {
+          onChange(parsed);
+        }
+      } catch { /* ignore */ }
+    };
+    reader.readAsText(file);
+    e.target.value = ''; // Reset input to allow selecting same file again
+  };
 
   const handleStyleChange = (key: keyof ResumeData['styles'], value: string) => {
     onChange({ ...data, styles: { ...data.styles, [key]: value } });
@@ -259,74 +290,134 @@ export const Layout: React.FC<LayoutProps> = ({ data, onChange }) => {
         </div>
 
         <div className="flex items-center bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs font-semibold">
-          <button
-            onClick={() => setActiveTab('editor')}
-            className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition ${
-              activeTab === 'editor' ? 'bg-indigo-600 text-white shadow' : 'text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            <Briefcase className="w-3.5 h-3.5" />
-            <span>Resume Form</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('ats')}
-            className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition ${
-              activeTab === 'ats' ? 'bg-indigo-600 text-white shadow' : 'text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            <Sparkles className="w-3.5 h-3.5 text-yellow-400" />
-            <span>ATS Scanner</span>
-          </button>
+          <div className="relative group">
+            <button
+              onClick={() => setActiveTab('editor')}
+              className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition ${
+                activeTab === 'editor' ? 'bg-indigo-600 text-white shadow' : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              <Briefcase className="w-3.5 h-3.5" />
+              <span>Resume Form</span>
+            </button>
+            <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2.5 py-1.5 bg-slate-900 border border-slate-800 text-slate-350 text-[10px] rounded-lg shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none transition duration-150 whitespace-nowrap z-[110] font-normal">
+              Open the inputs and section fields editor form
+            </div>
+          </div>
+
+          <div className="relative group">
+            <button
+              onClick={() => setActiveTab('ats')}
+              className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition ${
+                activeTab === 'ats' ? 'bg-indigo-600 text-white shadow' : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              <Sparkles className="w-3.5 h-3.5 text-yellow-400" />
+              <span>ATS Scanner</span>
+            </button>
+            <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2.5 py-1.5 bg-slate-900 border border-slate-800 text-slate-350 text-[10px] rounded-lg shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none transition duration-150 whitespace-nowrap z-[110] font-normal">
+              Analyze your resume match against a job description locally
+            </div>
+          </div>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <button
-            onClick={() => setShowStyleDrawer(!showStyleDrawer)}
-            className={`flex items-center gap-1.5 text-xs px-3 py-2 border rounded-lg transition ${
-              showStyleDrawer
-                ? 'bg-indigo-950 border-indigo-600 text-indigo-400'
-                : 'bg-slate-950 border-slate-800 hover:border-slate-700 text-slate-300'
-            }`}
-          >
-            <Settings className="w-3.5 h-3.5" />
-            <span>Style Settings</span>
-          </button>
+          <div className="relative group">
+            <button
+              onClick={() => setShowStyleDrawer(!showStyleDrawer)}
+              className={`flex items-center gap-1.5 text-xs px-3 py-2 border rounded-lg transition ${
+                showStyleDrawer
+                  ? 'bg-indigo-950 border-indigo-600 text-indigo-400'
+                  : 'bg-slate-950 border-slate-800 hover:border-slate-700 text-slate-300'
+              }`}
+            >
+              <Settings className="w-3.5 h-3.5" />
+              <span>Style Settings</span>
+            </button>
+            <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2.5 py-1.5 bg-slate-900 border border-slate-800 text-slate-350 text-[10px] rounded-lg shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none transition duration-150 whitespace-nowrap z-[110] font-normal">
+              Customize font styling, templates, margins, and theme accent colors
+            </div>
+          </div>
 
-          <button
-            onClick={handleResetData}
-            className="p-2 bg-slate-950 border border-slate-800 hover:border-rose-800/60 hover:text-rose-400 rounded-lg transition"
-            title="Reset to sample template"
-          >
-            <RotateCcw className="w-3.5 h-3.5" />
-          </button>
+          <div className="relative group">
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="flex items-center gap-1.5 text-xs px-3 py-2 bg-slate-950 border border-slate-800 hover:border-slate-700 text-slate-300 rounded-lg transition hover:text-indigo-400"
+            >
+              <Upload className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Import JSON</span>
+            </button>
+            <input type="file" ref={fileInputRef} onChange={handleJsonImport} accept=".json" className="hidden" />
+            <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2.5 py-1.5 bg-slate-900 border border-slate-800 text-slate-350 text-[10px] rounded-lg shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none transition duration-150 whitespace-nowrap z-[110] font-normal">
+              Restore data from a previously exported JSON backup file
+            </div>
+          </div>
 
-          <a
-            href="https://github.com/Mr-Who-Root/Free-Resume-Builder-Online"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 text-xs px-3 py-2 bg-slate-950 border border-slate-800 hover:border-slate-750 text-slate-300 rounded-lg transition hover:text-indigo-400"
-            title="View GitHub Repository"
-          >
-            <GithubIcon className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">GitHub</span>
-          </a>
+          <div className="relative group">
+            <button
+              onClick={handleJsonExport}
+              className="flex items-center gap-1.5 text-xs px-3 py-2 bg-slate-950 border border-slate-800 hover:border-slate-700 text-slate-300 rounded-lg transition hover:text-indigo-400"
+            >
+              <FileJson className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Export JSON</span>
+            </button>
+            <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2.5 py-1.5 bg-slate-900 border border-slate-800 text-slate-350 text-[10px] rounded-lg shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none transition duration-150 whitespace-nowrap z-[110] font-normal">
+              Export your resume configuration as a JSON backup file for future edits
+            </div>
+          </div>
+
+          <div className="relative group">
+            <button
+              onClick={handleResetData}
+              className="p-2 bg-slate-950 border border-slate-800 hover:border-rose-800/60 hover:text-rose-400 rounded-lg transition"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+            </button>
+            <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2.5 py-1.5 bg-slate-900 border border-slate-800 text-slate-350 text-[10px] rounded-lg shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none transition duration-150 whitespace-nowrap z-[110] font-normal">
+              Reset editor content to default developer sample template data
+            </div>
+          </div>
+
+          <div className="relative group">
+            <a
+              href="https://github.com/Mr-Who-Root/Free-Resume-Builder-Online"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 text-xs px-3 py-2 bg-slate-950 border border-slate-800 hover:border-slate-750 text-slate-300 rounded-lg transition hover:text-indigo-400"
+            >
+              <GithubIcon className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">GitHub</span>
+            </a>
+            <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2.5 py-1.5 bg-slate-900 border border-slate-800 text-slate-350 text-[10px] rounded-lg shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none transition duration-150 whitespace-nowrap z-[110] font-normal">
+              Visit the open-source code repository of this project on GitHub
+            </div>
+          </div>
 
           <div className="flex items-center bg-indigo-600 rounded-lg overflow-hidden shadow-lg shadow-indigo-600/20">
-            <button
-              onClick={handlePdfDownload}
-              className="flex items-center gap-1.5 px-3 py-2 hover:bg-indigo-700 text-white text-xs font-bold transition"
-            >
-              <Download className="w-3.5 h-3.5" />
-              <span>Download PDF</span>
-            </button>
+            <div className="relative group">
+              <button
+                onClick={handlePdfDownload}
+                className="flex items-center gap-1.5 px-3 py-2 hover:bg-indigo-700 text-white text-xs font-bold transition"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span>Download PDF</span>
+              </button>
+              <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2.5 py-1.5 bg-slate-900 border border-slate-800 text-slate-350 text-[10px] rounded-lg shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none transition duration-150 whitespace-nowrap z-[110] font-normal">
+                Download resume as print-ready PDF vector file
+              </div>
+            </div>
             <div className="w-px h-6 bg-indigo-500/60" />
-            <button
-              onClick={handleDocDownload}
-              className="px-3 py-2 hover:bg-indigo-700 text-white text-xs font-bold transition"
-              title="Export as MS Word (.doc)"
-            >
-              Word
-            </button>
+            <div className="relative group">
+              <button
+                onClick={handleDocDownload}
+                className="px-3 py-2 hover:bg-indigo-700 text-white text-xs font-bold transition"
+              >
+                Word
+              </button>
+              <div className="absolute top-full right-0 mt-2 px-2.5 py-1.5 bg-slate-900 border border-slate-800 text-slate-350 text-[10px] rounded-lg shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none transition duration-150 whitespace-nowrap z-[110] font-normal">
+                Export resume as editable MS Word (.doc) document
+              </div>
+            </div>
           </div>
         </div>
       </header>
