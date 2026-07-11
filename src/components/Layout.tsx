@@ -4,7 +4,6 @@ import { FormPanel } from './FormPanel';
 import { PreviewPanel } from './PreviewPanel';
 import { AtsScanner } from './AtsScanner';
 import { downloadPdf } from '../utils/pdf';
-import { downloadDoc } from '../utils/doc';
 import { SAMPLE_RESUME_DATA } from '../utils/storage';
 
 import {
@@ -266,11 +265,7 @@ export const Layout: React.FC<LayoutProps> = ({ data, onChange }) => {
   const handlePdfDownloadActual = () =>
     downloadPdf('resume-preview-root', `${data.personalInfo.name.replace(/\s+/g, '_')}_Resume.pdf`, pageSize);
 
-  const handleDocDownloadActual = () =>
-    downloadDoc('resume-preview-root', `${data.personalInfo.name.replace(/\s+/g, '_')}_Resume.doc`);
-
   const handlePdfDownload = () => setShowStarPrompt({ type: 'pdf' });
-  const handleDocDownload = () => setShowStarPrompt({ type: 'doc' });
 
   const handleResetData = () => setShowResetConfirm(true);
 
@@ -404,18 +399,6 @@ export const Layout: React.FC<LayoutProps> = ({ data, onChange }) => {
               </button>
               <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2.5 py-1.5 bg-slate-900 border border-slate-800 text-slate-350 text-[10px] rounded-lg shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none transition duration-150 whitespace-nowrap z-[110] font-normal">
                 Download resume as print-ready PDF vector file
-              </div>
-            </div>
-            <div className="w-px h-6 bg-indigo-500/60" />
-            <div className="relative group">
-              <button
-                onClick={handleDocDownload}
-                className="px-3 py-2 hover:bg-indigo-700 text-white text-xs font-bold transition"
-              >
-                Word
-              </button>
-              <div className="absolute top-full right-0 mt-2 px-2.5 py-1.5 bg-slate-900 border border-slate-800 text-slate-350 text-[10px] rounded-lg shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none transition duration-150 whitespace-nowrap z-[110] font-normal">
-                Export resume as editable MS Word (.doc) document
               </div>
             </div>
           </div>
@@ -567,11 +550,7 @@ export const Layout: React.FC<LayoutProps> = ({ data, onChange }) => {
               </button>
               <button
                 onClick={() => {
-                  if (showStarPrompt.type === 'pdf') {
-                    handlePdfDownloadActual();
-                  } else {
-                    handleDocDownloadActual();
-                  }
+                  handlePdfDownloadActual();
                   setShowStarPrompt(null);
                 }}
                 className="px-4 py-2 text-xs bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold transition"
