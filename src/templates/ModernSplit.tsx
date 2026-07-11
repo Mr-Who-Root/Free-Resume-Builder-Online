@@ -64,7 +64,7 @@ export const ModernSplit: React.FC<TemplateProps> = ({ data, styleUtils }) => {
       {renderSectionHeader('Professional Experience')}
       <div className="space-y-3.5">
         {experience.map((exp) => (
-          <div key={exp.id} className="w-full">
+          <div key={exp.id} className="w-full print:break-inside-avoid experience-item">
             <div className="flex justify-between items-baseline font-semibold text-xs text-gray-900">
               <span>{exp.position}</span>
               <span className="text-gray-500 font-normal text-[10px] whitespace-nowrap">{exp.startDate} – {exp.endDate}</span>
@@ -98,7 +98,7 @@ export const ModernSplit: React.FC<TemplateProps> = ({ data, styleUtils }) => {
       {renderSectionHeader('Education')}
       <div className="space-y-2.5">
         {education.map((edu) => (
-          <div key={edu.id} className="w-full">
+          <div key={edu.id} className="w-full print:break-inside-avoid education-item">
             <div className="flex justify-between items-baseline font-semibold text-xs text-gray-900">
               <span>{edu.degree}</span>
               <span className="text-gray-500 font-normal text-[10px]">{edu.startDate} – {edu.endDate}</span>
@@ -127,7 +127,7 @@ export const ModernSplit: React.FC<TemplateProps> = ({ data, styleUtils }) => {
       {renderSectionHeader('Projects')}
       <div className="space-y-3">
         {projects.map((proj) => (
-          <div key={proj.id} className="w-full">
+          <div key={proj.id} className="w-full print:break-inside-avoid project-item">
             <div className="flex justify-between items-baseline font-semibold text-xs text-gray-900">
               <span>{proj.name}</span>
               {proj.link && (
@@ -192,7 +192,7 @@ export const ModernSplit: React.FC<TemplateProps> = ({ data, styleUtils }) => {
           const dateVal = dateField ? item[dateField.name] : '';
 
           return (
-            <div key={item.id} className="space-y-0.5 text-[11px]">
+            <div key={item.id} className="space-y-0.5 text-[11px] print:break-inside-avoid custom-item">
               <div className={`font-semibold ${onDark ? 'text-white' : 'text-gray-900'} flex justify-between gap-1`}>
                 <span>{titleVal}</span>
                 {dateVal && <span className={`${onDark ? 'text-gray-400' : 'text-gray-500'} font-normal text-[9px]`}>{dateVal}</span>}

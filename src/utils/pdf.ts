@@ -28,8 +28,28 @@ export const downloadPdf = (resumeElementId: string, filename: string, pageSize:
 
   // Copy stylesheets and fonts from main document
   const headElements = document.querySelectorAll('style, link[rel="stylesheet"]');
+  const styleLoadPromises: Promise<any>[] = [];
+
   headElements.forEach(el => {
-    iframeDoc.head.appendChild(el.cloneNode(true));
+    const clonedNode = el.cloneNode(true);
+    iframeDoc.head.appendChild(clonedNode);
+
+    // If it's an external link stylesheet, monitor its load event to prevent race conditions
+    if (el.tagName.toLowerCase() === 'link' && el.getAttribute('rel') === 'stylesheet') {
+      const loadPromise = new Promise((resolve) => {
+        clonedNode.addEventListener('load', resolve);
+        clonedNode.addEventListener('error', resolve); // Proceed anyway on error
+        
+        // Safety check if already loaded
+        if ((clonedNode as any).sheet) {
+          resolve(true);
+        }
+        
+        // Timeout safeguard
+        setTimeout(resolve, 2000);
+      });
+      styleLoadPromises.push(loadPromise);
+    }
   });
 
   const pageWidth = pageSize === 'letter' ? '816px' : '794px';
@@ -38,7 +58,7 @@ export const downloadPdf = (resumeElementId: string, filename: string, pageSize:
   const printStyle = iframeDoc.createElement('style');
   printStyle.textContent = `
     @page {
-      margin: 0;
+      margin: 15mm 15mm 15mm 15mm;
       size: ${pageSize === 'letter' ? 'letter' : 'A4'};
     }
     html, body {
@@ -63,11 +83,28 @@ export const downloadPdf = (resumeElementId: string, filename: string, pageSize:
       margin: 0 !important;
       width: 100% !important;
       min-height: 0 !important;
+      padding: 0 !important;
     }
 
     /* Print-specific layout fixes */
     .print-hide {
       display: none !important;
+    }
+
+    /* Avoid cutting off data blocks horizontally in the middle of a page break */
+    .experience-item, 
+    .education-item, 
+    .project-item, 
+    .custom-item,
+    .skills-category-item {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Prevent orphan headings from splitting onto separate pages from their content */
+    h2 {
+      page-break-after: avoid !important;
+      break-after: avoid !important;
     }
   `;
   iframeDoc.head.appendChild(printStyle);
@@ -82,18 +119,33 @@ export const downloadPdf = (resumeElementId: string, filename: string, pageSize:
     </div>
   `;
 
-  // Wait for assets/fonts to load, then print
-  setTimeout(() => {
+  // Asynchronously trigger printing when all styles and fonts are fully resolved
+  const executePrint = async () => {
     try {
+      // 1. Wait for link stylesheets to resolve
+      await Promise.all(styleLoadPromises);
+
+      // 2. Wait for fonts to be ready inside the iframe contexts
+      if ((iframeDoc as any).fonts) {
+        await (iframeDoc as any).fonts.ready;
+      }
+
+      // 3. Brief layout settle buffer
+      await new Promise(resolve => setTimeout(resolve, 350));
+
       iframe.contentWindow?.focus();
       iframe.contentWindow?.print();
     } catch (e) {
       console.error("Iframe printing failed:", e);
     } finally {
-      // Remove iframe after print dialog completes
+      // Clean up iframe helper element
       setTimeout(() => {
-        document.body.removeChild(iframe);
-      }, 500);
+        if (iframe.parentNode) {
+          document.body.removeChild(iframe);
+        }
+      }, 1000);
     }
-  }, 600);
+  };
+
+  executePrint();
 };

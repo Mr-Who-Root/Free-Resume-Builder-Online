@@ -1,18 +1,16 @@
 import React, { useState, useRef, useEffect } from 'react';
 import type { ResumeData } from '../types/resume';
 import { TemplateRenderer } from '../templates/TemplateRenderer';
-import { ZoomIn, ZoomOut, RotateCcw, FileText } from 'lucide-react';
+import { ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
 
 interface PreviewPanelProps {
   resumeData: ResumeData;
   pageSize: 'letter' | 'a4';
-  onPageSizeChange: (size: 'letter' | 'a4') => void;
 }
 
 export const PreviewPanel: React.FC<PreviewPanelProps> = ({ 
   resumeData, 
   pageSize, 
-  onPageSizeChange 
 }) => {
   const [scale, setScale] = useState(0.85); // Default zoom level for comfortable dashboard preview
   const [contentHeight, setContentHeight] = useState(pageSize === 'letter' ? 1056 : 1123);
@@ -45,27 +43,7 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
     <div className="flex flex-col h-full bg-slate-950 shadow-2xl relative">
       
       {/* Zoom and Page controls Toolbar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 bg-slate-900 px-4 py-3 border-b border-slate-800 text-slate-300">
-        
-        {/* Paper Size selector */}
-        <div className="flex items-center gap-2">
-          <FileText className="w-4 h-4 text-indigo-400" />
-          <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">Paper Standard</span>
-          <div className="bg-slate-950 p-0.5 rounded-lg border border-slate-800/80 flex text-xs font-medium">
-            <button
-              onClick={() => onPageSizeChange('letter')}
-              className={`px-2 py-1 rounded-md transition ${pageSize === 'letter' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-slate-200'}`}
-            >
-              Letter (US)
-            </button>
-            <button
-              onClick={() => onPageSizeChange('a4')}
-              className={`px-2 py-1 rounded-md transition ${pageSize === 'a4' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-slate-200'}`}
-            >
-              A4 (MNC Standard)
-            </button>
-          </div>
-        </div>
+      <div className="flex flex-wrap items-center justify-end gap-3 bg-slate-900 px-4 py-3 border-b border-slate-800 text-slate-300">
 
         {/* Zoom Controller */}
         <div className="flex items-center gap-1">
@@ -131,22 +109,36 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
               <TemplateRenderer data={resumeData} />
               
               {/* Visual Page Break indicators for multi-page editing guidance */}
-              {Array.from({ length: Math.max(0, Math.ceil(contentHeight / (pageSize === 'letter' ? 1056 : 1123)) - 1) }).map((_, idx) => {
+              {(() => {
                 const pageHeightValue = pageSize === 'letter' ? 1056 : 1123;
-                const pageNum = idx + 1;
-                const topPos = pageNum * pageHeightValue;
-                return (
-                  <div 
-                    key={pageNum}
-                    className="absolute left-0 right-0 border-t-2 border-dashed border-rose-400/50 z-50 pointer-events-none print:hidden flex justify-end"
-                    style={{ top: `${topPos}px` }}
-                  >
-                    <span className="bg-rose-100 text-rose-700 text-[9px] px-2 py-0.5 rounded-l border-l border-b border-t border-rose-200 font-bold uppercase tracking-wider -translate-y-1/2 shadow-sm">
-                      Page {pageNum} / Page {pageNum + 1} Break
-                    </span>
-                  </div>
+                const pageWidthValue = pageSize === 'letter' ? 816 : 794;
+                
+                // Print margins are 15mm = ~56.7px each side (113.4px total top/bottom and left/right)
+                const totalMargin = 113.4;
+                
+                // Calculate the content height per page after browser print scaling is applied
+                const printableHeightValue = Math.round(
+                  (pageHeightValue - totalMargin) * pageWidthValue / (pageWidthValue - totalMargin)
                 );
-              })}
+                
+                const pageCount = Math.max(0, Math.ceil(contentHeight / printableHeightValue) - 1);
+                
+                return Array.from({ length: pageCount }).map((_, idx) => {
+                  const pageNum = idx + 1;
+                  const topPos = pageNum * printableHeightValue;
+                  return (
+                    <div 
+                      key={pageNum}
+                      className="absolute left-0 right-0 border-t-2 border-dashed border-rose-400/50 z-50 pointer-events-none print:hidden flex justify-end"
+                      style={{ top: `${topPos}px` }}
+                    >
+                      <span className="bg-rose-100 text-rose-700 text-[9px] px-2 py-0.5 rounded-l border-l border-b border-t border-rose-200 font-bold uppercase tracking-wider -translate-y-1/2 shadow-sm">
+                        Page {pageNum} / Page {pageNum + 1} Break
+                      </span>
+                    </div>
+                  );
+                });
+              })()}
             </div>
           </div>
         </div>

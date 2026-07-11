@@ -46,7 +46,7 @@ export const DeFactoTech: React.FC<TemplateProps> = ({ data, styleUtils }) => {
       {renderSectionHeader('Experience')}
       <div className={spacingClass}>
         {experience.map((exp) => (
-          <div key={exp.id} className="w-full">
+          <div key={exp.id} className="w-full print:break-inside-avoid experience-item">
             <div className="flex justify-between items-baseline font-semibold">
               <span className="text-gray-900">{exp.company}</span>
               <span className="text-gray-600 font-normal text-xs">{exp.startDate} – {exp.endDate}</span>
@@ -80,7 +80,7 @@ export const DeFactoTech: React.FC<TemplateProps> = ({ data, styleUtils }) => {
       {renderSectionHeader('Education')}
       <div className={spacingClass}>
         {education.map((edu) => (
-          <div key={edu.id} className="w-full">
+          <div key={edu.id} className="w-full print:break-inside-avoid education-item">
             <div className="flex justify-between items-baseline font-semibold">
               <span className="text-gray-900">{edu.institution}</span>
               <span className="text-gray-600 font-normal text-xs">{edu.startDate} – {edu.endDate}</span>
@@ -126,7 +126,7 @@ export const DeFactoTech: React.FC<TemplateProps> = ({ data, styleUtils }) => {
       {renderSectionHeader('Projects')}
       <div className={spacingClass}>
         {projects.map((proj) => (
-          <div key={proj.id} className="w-full">
+          <div key={proj.id} className="w-full print:break-inside-avoid project-item">
             <div className="flex justify-between items-baseline">
               <span className="font-semibold text-gray-900 flex items-center gap-1.5">
                 {proj.name}
@@ -181,7 +181,7 @@ export const DeFactoTech: React.FC<TemplateProps> = ({ data, styleUtils }) => {
           const dateVal = dateField ? item[dateField.name] : '';
 
           return (
-            <div key={item.id} className="w-full">
+            <div key={item.id} className="w-full print:break-inside-avoid custom-item">
               <div className="flex justify-between items-baseline font-semibold">
                 <span className="text-gray-900">{titleVal}</span>
                 {dateVal && <span className="text-gray-600 font-normal text-xs">{dateVal}</span>}

@@ -48,7 +48,7 @@ export const MinimalistExecutive: React.FC<TemplateProps> = ({ data, styleUtils 
       {renderSectionHeader('Professional Experience')}
       <div className="space-y-4">
         {experience.map((exp) => (
-          <div key={exp.id} className="w-full space-y-1">
+          <div key={exp.id} className="w-full space-y-1 print:break-inside-avoid experience-item">
             <div className="flex justify-between items-baseline font-medium text-xs">
               <span className="text-gray-900 text-sm">{exp.company}</span>
               <span className="text-gray-500 font-normal italic">{exp.startDate} – {exp.endDate}</span>
@@ -82,7 +82,7 @@ export const MinimalistExecutive: React.FC<TemplateProps> = ({ data, styleUtils 
       {renderSectionHeader('Education')}
       <div className="space-y-3">
         {education.map((edu) => (
-          <div key={edu.id} className="w-full space-y-0.5">
+          <div key={edu.id} className="w-full space-y-0.5 print:break-inside-avoid education-item">
             <div className="flex justify-between items-baseline font-medium text-xs">
               <span className="text-gray-900 text-sm">{edu.institution}</span>
               <span className="text-gray-500 font-normal italic">{edu.startDate} – {edu.endDate}</span>
@@ -128,7 +128,7 @@ export const MinimalistExecutive: React.FC<TemplateProps> = ({ data, styleUtils 
       {renderSectionHeader('Key Projects')}
       <div className="space-y-4">
         {projects.map((proj) => (
-          <div key={proj.id} className="w-full space-y-1">
+          <div key={proj.id} className="w-full space-y-1 print:break-inside-avoid project-item">
             <div className="flex justify-between items-baseline">
               <span className="font-semibold text-gray-900 text-xs">
                 {proj.name} {proj.technologies && <span className="font-normal italic text-gray-500">({proj.technologies})</span>}
@@ -178,7 +178,7 @@ export const MinimalistExecutive: React.FC<TemplateProps> = ({ data, styleUtils 
           const dateVal = dateField ? item[dateField.name] : '';
 
           return (
-            <div key={item.id} className="w-full space-y-1">
+            <div key={item.id} className="w-full space-y-1 print:break-inside-avoid custom-item">
               <div className="flex justify-between items-baseline font-medium text-xs">
                 <span className="text-gray-900 text-sm">{titleVal}</span>
                 {dateVal && <span className="text-gray-500 font-normal italic">{dateVal}</span>}

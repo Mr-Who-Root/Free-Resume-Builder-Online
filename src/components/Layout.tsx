@@ -226,7 +226,7 @@ export const Layout: React.FC<LayoutProps> = ({ data, onChange }) => {
   const [activeTab, setActiveTab] = useState<'editor' | 'ats'>('editor');
   const [showStyleDrawer, setShowStyleDrawer] = useState(false);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
-  const [pageSize, setPageSize] = useState<'letter' | 'a4'>('letter');
+  const pageSize = 'a4';
   const [jobDescription, setJobDescription] = useState('');
   const [showStarPrompt, setShowStarPrompt] = useState<{ type: 'pdf' | 'doc' } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -478,7 +478,6 @@ export const Layout: React.FC<LayoutProps> = ({ data, onChange }) => {
           <PreviewPanel 
             resumeData={data} 
             pageSize={pageSize} 
-            onPageSizeChange={setPageSize} 
           />
         </div>
 

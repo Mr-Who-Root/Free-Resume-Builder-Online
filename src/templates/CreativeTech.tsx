@@ -65,7 +65,7 @@ export const CreativeTech: React.FC<TemplateProps> = ({ data, styleUtils }) => {
       {renderSectionHeader('Professional Experience')}
       <div className="space-y-4">
         {experience.map((exp) => (
-          <div key={exp.id} className="w-full relative pl-4 border-l border-gray-150">
+          <div key={exp.id} className="w-full relative pl-4 border-l border-gray-150 print:break-inside-avoid experience-item">
             {/* Dot marker on timeline */}
             <div className="absolute -left-[4.5px] top-1.5 w-2 h-2 rounded-full border border-white" style={{ backgroundColor: styleUtils.accentColor }} />
             
@@ -102,7 +102,7 @@ export const CreativeTech: React.FC<TemplateProps> = ({ data, styleUtils }) => {
       {renderSectionHeader('Education')}
       <div className="space-y-3.5">
         {education.map((edu) => (
-          <div key={edu.id} className="w-full pl-4 border-l border-gray-150 relative">
+          <div key={edu.id} className="w-full pl-4 border-l border-gray-150 relative print:break-inside-avoid education-item">
             <div className="absolute -left-[4.5px] top-1.5 w-2 h-2 rounded-full border border-white bg-gray-400" />
             <div className="flex justify-between items-baseline font-bold text-xs text-gray-900">
               <span>{edu.degree} in {edu.fieldOfStudy}</span>
@@ -158,7 +158,7 @@ export const CreativeTech: React.FC<TemplateProps> = ({ data, styleUtils }) => {
       {renderSectionHeader('Projects')}
       <div className="space-y-4">
         {projects.map((proj) => (
-          <div key={proj.id} className="w-full space-y-1">
+          <div key={proj.id} className="w-full space-y-1 print:break-inside-avoid project-item">
             <div className="flex justify-between items-baseline">
               <span className="font-bold text-xs text-gray-900 flex items-center gap-2">
                 {proj.name}
@@ -213,7 +213,7 @@ export const CreativeTech: React.FC<TemplateProps> = ({ data, styleUtils }) => {
           const dateVal = dateField ? item[dateField.name] : '';
 
           return (
-            <div key={item.id} className="w-full space-y-0.5 pl-4 border-l border-gray-150 relative">
+            <div key={item.id} className="w-full space-y-0.5 pl-4 border-l border-gray-150 relative print:break-inside-avoid custom-item">
               <div className="absolute -left-[4.5px] top-1.5 w-2 h-2 rounded-full border border-white bg-gray-400" />
               <div className="flex justify-between items-baseline font-bold text-xs text-gray-900">
                 <span>{titleVal}</span>

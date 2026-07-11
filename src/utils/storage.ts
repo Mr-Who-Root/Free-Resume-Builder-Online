@@ -3,114 +3,154 @@ import type { ResumeData } from '../types/resume';
 const STORAGE_KEY = 'free_resume_builder_data';
 
 export const SAMPLE_RESUME_DATA: ResumeData = {
-  personalInfo: {
-    name: "Alex Mercer",
-    title: "Senior Full-Stack Engineer",
-    email: "alex.mercer@devmail.com",
-    phone: "+1 (555) 123-4567",
-    website: "github.com/alexmercer",
-    location: "San Francisco, CA",
-    summary: "Passionate engineer with 6+ years of experience designing and optimizing high-performance web applications. Specialized in **React**, **TypeScript**, and **Go**. Proven track record of improving application latency by *35%* and leading cross-functional teams to launch scalable platforms.",
-    photo: "",
-    customFields: [
-      { name: "LinkedIn", value: "linkedin.com/in/alexmercer" }
+  "personalInfo": {
+    "name": "Govind S R",
+    "title": "Cyber Security Engineer",
+    "email": "letter2gocind@gmail.com",
+    "phone": "+919946247235",
+    "website": "github.com/Mr-Who-Root",
+    "location": "Keralam, India",
+    "summary": "Experienced Cyber Security Engineer with a proven track record of identifying and resolving complex network and system security issues. Skilled at developing secure infrastructure solutions and security protocols.",
+    "photo": "",
+    "customFields": [
+      {
+        "name": "LinkedIn",
+        "value": "linkedin.com/in/govind-s-r-/"
+      }
     ]
   },
-  experience: [
+  "experience": [
     {
-      id: "exp-1",
-      company: "TechNova Solutions",
-      position: "Lead Software Engineer",
-      startDate: "Oct 2023",
-      endDate: "Present",
-      location: "San Francisco, CA",
-      description: "• Led a team of 6 engineers to rewrite the core real-time streaming pipeline, reducing server costs by **30%**\n• Orchestrated migration to React 18 and Vite, improving LCP speed by *45%* and developer build times\n• Implemented robust Redis caching mechanisms, decreasing database query loads by **40%**"
+      "id": "exp-1",
+      "company": "Activebytes Innovations",
+      "position": "Senior Security Engineer",
+      "startDate": "Aug 2022",
+      "endDate": "Present",
+      "location": "UAE / Remote",
+      "description": "- Worked on FortiSOAR and created **50+** playbooks.\n- Developed a SOC solution that automatically detects alerts and performs the required investigations.\n- Developed a Hunter module for creating different attack scenarios and generating alerts when suspicious activity is detected.\n- Developed a Compliance module containing **5+** security standards along with their associated alerts.\n- Developed **SOAR** modules with capabilities such as scheduled execution, pre-built and custom playbooks to automate repetitive manual tasks like alert triage, IP blocking, and user suspension. The platform also integrates multiple security tools (*firewalls, EDR, SIEM*, etc.) into a centralized console, enabling unified data sharing and coordinated response actions.\n- Created **100+** Compliance alerts and **300+** SOAR connectors and playbooks for various security solutions.\n- Developed a Threat Intelligence (TI) platform with capabilities including Threat Monitoring, Vulnerability Watcher, EASM, and Custom TI Reporting modules.\n- Developed an **AI Agent** to assist with the implementation of different log sources and support Detection Engineering by reviewing and optimizing alert playbooks."
     },
     {
-      id: "exp-2",
-      company: "DevStream Inc.",
-      position: "Senior Frontend Engineer",
-      startDate: "Jul 2021",
-      endDate: "Sep 2023",
-      location: "Remote",
-      description: "• Engineered and maintained customer-facing billing dashboards serving **5M+** monthly active users\n• Introduced TypeScript and standard ESLint rules, reducing runtime defects in production by **25%**\n• Mentored 4 junior engineers and built a custom reusable component library using Tailwind CSS"
+      "id": "exp-2",
+      "company": "ActivBytes Technologies",
+      "position": "Cyber Security Analyst (Internship)",
+      "startDate": "May 2022",
+      "endDate": "Aug 2022",
+      "location": "Remote",
+      "description": "-Implemented security controls to identify and mitigate potential threats.\n-Investigated and analyzed security incidents, and tracked down their source and scope.\n-Created more than 50 playbooks in Python for various alerts and their investigations."
     }
   ],
-  education: [
+  "education": [
     {
-      id: "edu-1",
-      institution: "University of California, Berkeley",
-      degree: "B.S. in Computer Science",
-      fieldOfStudy: "Software Engineering",
-      startDate: "2017",
-      endDate: "2021",
-      location: "Berkeley, CA",
-      description: "Graduated with Honors. Coursework in Data Structures, Algorithms, Distributed Systems, and UI Design."
+      "id": "edu-1",
+      "institution": "Anna University",
+      "degree": "Bachelor of Engineering",
+      "fieldOfStudy": "Computer Science and Engineering",
+      "startDate": "2017",
+      "endDate": "2021",
+      "location": "Tamil Nadu, India",
+      "description": "7.5 CGPA"
     }
   ],
-  skills: [
+  "skills": [
     {
-      id: "skill-1",
-      category: "Languages",
-      skills: "TypeScript, JavaScript, Go, Python, SQL, HTML5/CSS3"
+      "id": "skill-1",
+      "category": "Languages",
+      "skills": "Python, JavaScript, SQL, HTML/CSS"
     },
     {
-      id: "skill-2",
-      category: "Frameworks & Libraries",
-      skills: "React, Next.js, Node.js, Express, Tailwind CSS, Redux Toolkit"
+      "id": "skill-2",
+      "category": "Frameworks & Libraries",
+      "skills": "React, Next.js, Django, Fast API"
     },
     {
-      id: "skill-3",
-      category: "Tools & Infrastructure",
-      skills: "Docker, AWS (S3/EC2), Git, PostgreSQL, Redis, CI/CD (GitHub Actions)"
+      "id": "skill-3",
+      "category": "Tools & Infrastructure",
+      "skills": "Docker, AWS (S3/EC2), Elastic Search, FortiSOAR, Nmap, Burp Suite, Wireshark, Nuclei, Metasploit, Git, PostgreSQL, Redis, CI/CD (GitHub Actions),"
     }
   ],
-  projects: [
+  "projects": [
     {
-      id: "proj-1",
-      name: "AntiGravity Editor",
-      description: "A premium open-source Markdown writing platform featuring high-fidelity live preview and split-screen layouts. Reached **#3 on Product Hunt**.",
-      technologies: "React, Vite, Tailwind CSS, LocalStorage",
-      link: "github.com/alexmercer/antigravity"
+      "id": "proj-1",
+      "name": "UnityFlux",
+      "description": "AI-driven Extended Operations & Response tool integrating Red/Blue teaming automation, RAG knowledge, and ML-based log analysis at scale.",
+      "technologies": "",
+      "link": ""
     },
     {
-      id: "proj-2",
-      name: "FastAPI Rate Limiter",
-      description: "Distributed token-bucket rate limiter middleware for Python APIs. Supports Redis backend with zero-overhead configuration.",
-      technologies: "Python, Redis, Docker, GitHub Actions",
-      link: "github.com/alexmercer/fastapi-limiter"
+      "id": "proj-1783761977041",
+      "name": "Atomix",
+      "description": "Atomix is a multi-tenant SaaS and on-premises log management platform that provides an OpenSearch-like search experience with high-compression log storage, achieving up to **20×–90×** better compression than Elasticsearch while offering real-time alerting, dashboards, SOAR automation, firewall orchestration, and a unified cross-platform agent.",
+      "technologies": "Python, Next.js, Django, GO",
+      "link": ""
+    },
+    {
+      "id": "proj-2",
+      "name": "Cyber Threat Intelligence Platform",
+      "description": "Designed CTI platform with OpenSearch backend, STIX ingestion pipeline, and graph-based frontend for intel correlation and visualization.",
+      "technologies": "",
+      "link": ""
+    },
+    {
+      "id": "proj-1783761851933",
+      "name": "Custom SOAR Platform",
+      "description": "Developed SOAR modules with scheduled execution, customizable playbooks, and multi-tool integration to automate security workflows, including alert triage, IP blocking, user suspension, and coordinated incident response.",
+      "technologies": "",
+      "link": ""
     }
   ],
-  customSections: [
+  "customSections": [
     {
-      id: "custom-awards",
-      title: "Honors & Hackathons",
-      fields: [
-        { id: "f-title", name: "title", label: "Title / Award", type: "text" },
-        { id: "f-date", name: "date", label: "Date", type: "text" },
-        { id: "f-org", name: "org", label: "Organization", type: "text" },
-        { id: "f-desc", name: "desc", label: "Description", type: "textarea" }
-      ],
-      items: [
+      "id": "custom-1783761483581",
+      "title": "Certifications",
+      "fields": [
         {
-          id: "item-1",
-          title: "1st Place Winner",
-          date: "Nov 2025",
-          org: "Silicon Valley AI Hackathon",
-          desc: "Built a fully local model running voice agent that runs entirely offline inside a Chrome Extension."
+          "id": "f-1783761580149",
+          "name": "field_1783761580149",
+          "label": "Title",
+          "type": "text"
+        },
+        {
+          "id": "f-1783761586418",
+          "name": "field_1783761586418",
+          "label": "Date",
+          "type": "date"
+        }
+      ],
+      "items": [
+        {
+          "id": "item-1783761521335",
+          "field_1783761580149": "Certified Ethical Hacker (CEH), EC-Council",
+          "field_1783761586418": "April 2022"
+        },
+        {
+          "id": "item-1783761613174",
+          "field_1783761580149": "Certified Penetration Tester, RedTeam Hacker Academy",
+          "field_1783761586418": "Jan 2022"
+        },
+        {
+          "id": "item-1783761623124",
+          "field_1783761580149": "Splunk 7.x Fundamentals Part 1 , Splunk",
+          "field_1783761586418": "Oct 2021"
         }
       ]
     }
   ],
-  sectionOrder: ["personalInfo", "experience", "education", "skills", "projects", "custom-awards"],
-  styles: {
-    templateId: "tech-classic",
-    fontFamily: "sans",
-    fontSize: "sm",
-    lineHeight: "normal",
-    spacing: "normal",
-    margin: "medium",
-    colorTheme: "navy"
+  "sectionOrder": [
+    "personalInfo",
+    "experience",
+    "education",
+    "skills",
+    "projects",
+    "custom-1783761483581"
+  ],
+  "styles": {
+    "templateId": "tech-classic",
+    "fontFamily": "sans",
+    "fontSize": "sm",
+    "lineHeight": "normal",
+    "spacing": "normal",
+    "margin": "medium",
+    "colorTheme": "navy"
   }
 };
 
