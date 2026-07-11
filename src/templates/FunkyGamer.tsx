@@ -189,7 +189,7 @@ export const FunkyGamer: React.FC<TemplateProps> = ({ data, styleUtils }) => {
         {skills.map((skill) => (
           <div 
             key={skill.id} 
-            className={`space-y-1.5 ${
+            className={`space-y-1.5 break-inside-avoid print:break-inside-avoid ${
               isComic 
                 ? 'border-2 border-slate-950 p-3 rounded-lg bg-slate-50 shadow-[2px_2px_0px_rgba(0,0,0,1)]' 
                 : isArcade 
