@@ -15,7 +15,8 @@ import {
   ChevronDown,
   Check,
   Upload,
-  FileJson
+  FileJson,
+  AlertTriangle
 } from 'lucide-react';
 
 const GithubIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
@@ -233,7 +234,20 @@ export const Layout: React.FC<LayoutProps> = ({ data, onChange }) => {
   const pageSize = 'a4';
   const [jobDescription, setJobDescription] = useState('');
   const [showStarPrompt, setShowStarPrompt] = useState<{ type: 'pdf' | 'doc' } | null>(null);
+  const [showFirstOpenAlert, setShowFirstOpenAlert] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const hasShown = localStorage.getItem('hasShownBackupWarning');
+    if (!hasShown) {
+      setShowFirstOpenAlert(true);
+    }
+  }, []);
+
+  const handleCloseFirstOpenAlert = () => {
+    localStorage.setItem('hasShownBackupWarning', 'true');
+    setShowFirstOpenAlert(false);
+  };
 
   const handleJsonExport = () => {
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -256,6 +270,7 @@ export const Layout: React.FC<LayoutProps> = ({ data, onChange }) => {
         const parsed = JSON.parse(ev.target?.result as string);
         if (parsed?.personalInfo && parsed?.styles) {
           onChange(parsed);
+          handleCloseFirstOpenAlert();
         }
       } catch { /* ignore */ }
     };
@@ -517,6 +532,54 @@ export const Layout: React.FC<LayoutProps> = ({ data, onChange }) => {
                 className="px-4 py-2 text-xs bg-rose-600 hover:bg-rose-700 text-white rounded-lg font-semibold transition"
               >
                 Yes, Reset
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Local storage warning modal */}
+      {showFirstOpenAlert && (
+        <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-700/80 rounded-2xl p-6 max-w-md w-full shadow-2xl animate-slideDown space-y-4">
+            <div className="flex items-center gap-3 text-amber-500">
+              <div className="bg-amber-500/10 p-2.5 rounded-xl border border-amber-500/20">
+                <AlertTriangle className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-white">Browser Storage Notification</h3>
+                <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Please Read Carefully</p>
+              </div>
+            </div>
+            
+            <p className="text-xs text-slate-350 leading-relaxed">
+              This app is designed entirely <strong className="text-slate-200">client-side</strong> for maximum privacy. It does <strong className="text-amber-400">not</strong> save your resume data online on any remote servers. 
+            </p>
+            
+            <div className="bg-slate-950/80 p-3 rounded-xl border border-slate-850 space-y-2 text-xs">
+              <p className="text-slate-300 leading-normal">
+                To prevent accidental data loss (like clearing cookies or changing devices), please use the <strong className="text-indigo-400">JSON Export</strong> option to download a backup file of your data.
+              </p>
+              <p className="text-[11px] text-slate-400 italic">
+                You can import this backup file anytime in the future to restore and edit your resume!
+              </p>
+            </div>
+
+            <div className="flex gap-3 justify-end pt-3 border-t border-slate-800">
+              <button
+                onClick={() => {
+                  fileInputRef.current?.click();
+                }}
+                className="px-4 py-2 text-xs bg-slate-850 hover:bg-slate-800 text-slate-200 rounded-lg font-semibold transition border border-slate-800/80 hover:border-slate-700/80 flex items-center gap-1.5"
+              >
+                <Upload className="w-3.5 h-3.5 text-indigo-400" />
+                <span>Import JSON Backup</span>
+              </button>
+              <button
+                onClick={handleCloseFirstOpenAlert}
+                className="px-4 py-2 text-xs bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold transition shadow-md shadow-indigo-600/15"
+              >
+                Got it, Thanks!
               </button>
             </div>
           </div>
