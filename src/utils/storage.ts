@@ -8,14 +8,19 @@ export const SAMPLE_RESUME_DATA: ResumeData = {
     "title": "Cyber Security Engineer",
     "email": "letter2govind@gmail.com",
     "phone": "+919999999999",
-    "website": "github.com/Mr-Who-Root",
+    "website": "",
     "location": "Keralam, India",
     "summary": "Experienced Cyber Security Engineer with a proven track record of identifying and resolving complex network and system security issues. Skilled at developing secure infrastructure solutions and security protocols.",
     "photo": "",
-    "customFields": [
+    "customFields": [],
+    "socialLinks": [
       {
-        "name": "LinkedIn",
-        "value": "linkedin.com/in/govind-s-r-/"
+        "platform": "linkedin",
+        "username": "govind-s-r-"
+      },
+      {
+        "platform": "github",
+        "username": "Mr-Who-Root"
       }
     ]
   },
@@ -73,28 +78,28 @@ export const SAMPLE_RESUME_DATA: ResumeData = {
       "id": "proj-1",
       "name": "UnityFlux",
       "description": "AI-driven Extended Operations & Response tool integrating Red/Blue teaming automation, RAG knowledge, and ML-based log analysis at scale.",
-      "technologies": "",
+      "technologies": "React, Python, Django, Rust",
       "link": ""
     },
     {
       "id": "proj-1783761977041",
       "name": "Atomix",
       "description": "Atomix is a multi-tenant SaaS and on-premises log management platform that provides an OpenSearch-like search experience with high-compression log storage, achieving up to **20×–90×** better compression than Elasticsearch while offering real-time alerting, dashboards, SOAR automation, firewall orchestration, and a unified cross-platform agent.",
-      "technologies": "Python, Next.js, Django, GO",
+      "technologies": "Python, Next.js, Django, GO, Docker",
       "link": ""
     },
     {
       "id": "proj-2",
       "name": "Cyber Threat Intelligence Platform",
       "description": "Designed CTI platform with OpenSearch backend, STIX ingestion pipeline, and graph-based frontend for intel correlation and visualization.",
-      "technologies": "",
+      "technologies": "React, Python, Django, Amazon RDS, Nmap, Nuclei",
       "link": ""
     },
     {
       "id": "proj-1783761851933",
       "name": "Custom SOAR Platform",
       "description": "Developed SOAR modules with scheduled execution, customizable playbooks, and multi-tool integration to automate security workflows, including alert triage, IP blocking, user suspension, and coordinated incident response.",
-      "technologies": "",
+      "technologies": "Python, Django, React, Docker",
       "link": ""
     }
   ],
@@ -145,7 +150,7 @@ export const SAMPLE_RESUME_DATA: ResumeData = {
   ],
   "styles": {
     "templateId": "tech-classic",
-    "fontFamily": "sans",
+    "fontFamily": "outfit",
     "fontSize": "sm",
     "lineHeight": "normal",
     "spacing": "normal",

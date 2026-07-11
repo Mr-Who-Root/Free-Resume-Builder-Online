@@ -77,7 +77,7 @@ export interface CustomSection {
 
 export interface TemplateStyles {
   templateId: string; // 12 variations
-  fontFamily: 'sans' | 'serif' | 'mono';
+  fontFamily: 'sans' | 'serif' | 'mono' | 'inter' | 'outfit' | 'roboto' | 'lora' | 'playfair' | 'robotomono';
   fontSize: 'xs' | 'sm' | 'md' | 'lg';
   lineHeight: 'tight' | 'normal' | 'relaxed';
   spacing: 'compact' | 'normal' | 'spacious';
