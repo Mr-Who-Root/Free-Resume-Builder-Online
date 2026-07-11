@@ -1,6 +1,7 @@
 import React from 'react';
 import type { ResumeData, CustomSection } from '../types/resume';
 import { MarkdownText } from '../components/MarkdownText';
+import { SocialLinkBar } from '../components/SocialLinkBar';
 
 interface TemplateProps {
   data: ResumeData;
@@ -253,6 +254,15 @@ export const MinimalistExecutive: React.FC<TemplateProps> = ({ data, styleUtils 
               </span>
             ))}
           </div>
+          {personalInfo.socialLinks && personalInfo.socialLinks.length > 0 && (
+            <SocialLinkBar
+              links={personalInfo.socialLinks}
+              layout="row"
+              className="mt-1 justify-start"
+              iconSize={11}
+              textClass="text-gray-400 print:text-black"
+            />
+          )}
         </div>
       </div>
 

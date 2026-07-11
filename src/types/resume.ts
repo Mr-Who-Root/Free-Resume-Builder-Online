@@ -1,3 +1,11 @@
+export type SocialPlatform = 'linkedin' | 'github' | 'instagram' | 'youtube' | 'facebook' | 'twitter' | 'tiktok' | 'behance' | 'dribbble' | 'medium' | 'stackoverflow' | 'other';
+
+export interface SocialLink {
+  platform: SocialPlatform;
+  username: string;
+  url?: string; // optional custom URL; if absent, auto-generated from username
+}
+
 export interface PersonalInfo {
   name: string;
   title: string;
@@ -7,8 +15,10 @@ export interface PersonalInfo {
   location: string;
   summary: string;
   photo?: string;
+  socialLinks?: SocialLink[];
   customFields?: Array<{ name: string; value: string }>;
 }
+
 
 export interface ExperienceItem {
   id: string;

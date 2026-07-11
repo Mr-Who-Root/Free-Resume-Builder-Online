@@ -1,6 +1,7 @@
 import React from 'react';
 import type { ResumeData, CustomSection } from '../types/resume';
 import { MarkdownText } from '../components/MarkdownText';
+import { SocialLinkBar } from '../components/SocialLinkBar';
 
 interface TemplateProps {
   data: ResumeData;
@@ -260,6 +261,16 @@ export const DeFactoTech: React.FC<TemplateProps> = ({ data, styleUtils }) => {
               </React.Fragment>
             ))}
           </div>
+          {/* Social links row */}
+          {personalInfo.socialLinks && personalInfo.socialLinks.length > 0 && (
+            <SocialLinkBar
+              links={personalInfo.socialLinks}
+              layout="row"
+              className={`mt-1 ${personalInfo.photo ? 'justify-start' : 'justify-center'}`}
+              iconSize={11}
+              textClass="text-gray-500 print:text-black"
+            />
+          )}
         </div>
       </div>
 

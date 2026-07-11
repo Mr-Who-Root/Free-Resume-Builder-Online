@@ -5,8 +5,10 @@ import type {
   EducationItem, 
   SkillCategory, 
   ProjectItem, 
-  CustomSection
+  CustomSection,
+  SocialLink
 } from '../types/resume';
+import { SocialLinksSection } from './SocialLinksSection';
 import { 
   DragDropContext, 
   Droppable, 
@@ -707,6 +709,17 @@ export const FormPanel: React.FC<FormPanelProps> = ({ data, onChange }) => {
                 value={data.personalInfo.summary}
                 onChange={(val) => handlePersonalInfoChange('summary', val)}
                 placeholder="Senior developer with 5+ years of experience. Specialized in **React** and *TypeScript*."
+              />
+
+              {/* Social Links */}
+              <SocialLinksSection
+                links={data.personalInfo.socialLinks || []}
+                onChange={(links: SocialLink[]) =>
+                  onChange({
+                    ...data,
+                    personalInfo: { ...data.personalInfo, socialLinks: links },
+                  })
+                }
               />
 
               {/* Custom Contact Fields */}

@@ -1,6 +1,7 @@
 import React from 'react';
 import type { ResumeData, CustomSection } from '../types/resume';
 import { MarkdownText } from '../components/MarkdownText';
+import { SocialLinkBar } from '../components/SocialLinkBar';
 
 interface TemplateProps {
   data: ResumeData;
@@ -272,6 +273,15 @@ export const ModernSplit: React.FC<TemplateProps> = ({ data, styleUtils }) => {
             <span key={i} className="whitespace-nowrap">{c.val}</span>
           ))}
         </div>
+        {personalInfo.socialLinks && personalInfo.socialLinks.length > 0 && (
+          <SocialLinkBar
+            links={personalInfo.socialLinks}
+            layout="row"
+            className="justify-center mt-1"
+            iconSize={11}
+            textClass="text-slate-300"
+          />
+        )}
       </div>
 
       {/* Main Body Split */}
