@@ -963,7 +963,7 @@ export const FormPanel: React.FC<FormPanelProps> = ({ data, onChange }) => {
 
               <button 
                 onClick={addExperience}
-                className="w-full flex items-center justify-center gap-1 py-2.5 mt-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs rounded-lg transition shadow-md shadow-indigo-650/10"
+                className="w-full flex items-center justify-center gap-1 py-2.5 mt-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs rounded-lg transition shadow-md shadow-indigo-600/10"
               >
                 <Plus className="w-4 h-4" />
                 <span>Add Experience</span>

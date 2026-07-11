@@ -199,7 +199,7 @@ export const ModernSplit: React.FC<TemplateProps> = ({ data, styleUtils }) => {
               </div>
               
               {metaFields.length > 0 && (
-                <div className={`text-[10px] flex flex-wrap gap-x-2.5 gap-y-0.5 mt-0.5 ${onDark ? 'text-gray-300' : 'text-gray-650'}`}>
+                <div className={`text-[10px] flex flex-wrap gap-x-2.5 gap-y-0.5 mt-0.5 ${onDark ? 'text-gray-300' : 'text-gray-600'}`}>
                   {metaFields.map(f => {
                     const val = item[f.name];
                     if (!val) return null;
@@ -261,8 +261,8 @@ export const ModernSplit: React.FC<TemplateProps> = ({ data, styleUtils }) => {
   return (
     <div className={`resume-paper w-full bg-white shadow-lg grid grid-cols-12 ${fontClass} ${sizeClass} ${leadingClass}`}>
       {/* Top Header Row (Shared across columns) */}
-      <div className="col-span-12 bg-slate-950 text-white px-8 py-5 flex flex-col md:flex-row justify-between items-center gap-3 border-b-4" style={{ borderColor: accentColor }}>
-        <div className="text-center md:text-left space-y-0.5">
+      <div className="col-span-12 bg-slate-950 text-white px-8 py-5 flex flex-row justify-between items-center gap-3 border-b-4" style={{ borderColor: accentColor }}>
+        <div className="text-left space-y-0.5">
           <h1 className="text-2xl font-bold tracking-tight">{personalInfo.name}</h1>
           {personalInfo.title && <p className="text-xs tracking-wider text-slate-300 font-medium uppercase">{personalInfo.title}</p>}
         </div>

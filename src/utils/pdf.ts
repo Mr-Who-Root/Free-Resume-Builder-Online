@@ -52,6 +52,20 @@ export const downloadPdf = (resumeElementId: string, filename: string, pageSize:
     }
   });
 
+  // Inject Google Fonts link directly to prevent @import loading race conditions
+  const googleFontLink = iframeDoc.createElement('link');
+  googleFontLink.rel = 'stylesheet';
+  googleFontLink.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Roboto+Mono:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap';
+  
+  const googleFontPromise = new Promise((resolve) => {
+    googleFontLink.addEventListener('load', resolve);
+    googleFontLink.addEventListener('error', resolve);
+    setTimeout(resolve, 2000);
+  });
+  
+  iframeDoc.head.appendChild(googleFontLink);
+  styleLoadPromises.push(googleFontPromise);
+
   const pageWidth = pageSize === 'letter' ? '816px' : '794px';
 
   // Ensure high quality print styles and page settings are applied

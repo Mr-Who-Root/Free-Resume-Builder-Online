@@ -210,7 +210,7 @@ export const MarkdownTextarea: React.FC<MarkdownTextareaProps> = ({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
-          className={`w-full text-sm bg-transparent border-none p-2.5 text-slate-100 placeholder-slate-655 focus:outline-none resize-none overflow-hidden ${className}`}
+          className={`w-full text-sm bg-transparent border-none p-2.5 text-slate-100 placeholder-slate-500 focus:outline-none resize-none overflow-hidden ${className}`}
         />
       </div>
     </div>

@@ -60,7 +60,7 @@ export const DeFactoTech: React.FC<TemplateProps> = ({ data, styleUtils }) => {
               </div>
             )}
             {exp.customFields && exp.customFields.length > 0 && (
-              <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1 text-[10px] text-gray-650 font-medium">
+              <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1 text-[10px] text-gray-600 font-medium">
                 {exp.customFields.map((f, i) => f.name && f.value && (
                   <span key={i}>
                     <span className="font-semibold text-gray-800">{f.name}:</span> {f.value}
@@ -92,7 +92,7 @@ export const DeFactoTech: React.FC<TemplateProps> = ({ data, styleUtils }) => {
               <p className="mt-1 text-xs text-gray-700">{edu.description}</p>
             )}
             {edu.customFields && edu.customFields.length > 0 && (
-              <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1 text-[10px] text-gray-655 font-medium">
+              <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1 text-[10px] text-gray-600 font-medium">
                 {edu.customFields.map((f, i) => f.name && f.value && (
                   <span key={i}>
                     <span className="font-semibold text-gray-800">{f.name}:</span> {f.value}
@@ -147,7 +147,7 @@ export const DeFactoTech: React.FC<TemplateProps> = ({ data, styleUtils }) => {
               </div>
             )}
             {proj.customFields && proj.customFields.length > 0 && (
-              <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1 text-[10px] text-gray-650 font-medium">
+              <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1 text-[10px] text-gray-600 font-medium">
                 {proj.customFields.map((f, i) => f.name && f.value && (
                   <span key={i}>
                     <span className="font-semibold text-gray-800">{f.name}:</span> {f.value}
@@ -193,7 +193,7 @@ export const DeFactoTech: React.FC<TemplateProps> = ({ data, styleUtils }) => {
                     if (!val) return null;
                     if (/^https?:\/\//i.test(val)) {
                       return (
-                        <a key={f.id} href={val} target="_blank" rel="noopener noreferrer" className="underline hover:text-indigo-650">
+                        <a key={f.id} href={val} target="_blank" rel="noopener noreferrer" className="underline hover:text-indigo-600">
                           {f.label}: {val}
                         </a>
                       );

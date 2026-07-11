@@ -92,7 +92,7 @@ export const MinimalistExecutive: React.FC<TemplateProps> = ({ data, styleUtils 
               <span className="italic">{edu.location}</span>
             </div>
             {edu.description && (
-              <p className="text-xs text-gray-655 italic mt-0.5">{edu.description}</p>
+              <p className="text-xs text-gray-600 italic mt-0.5">{edu.description}</p>
             )}
             {edu.customFields && edu.customFields.length > 0 && (
               <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1 text-[10px] text-gray-500 italic">
@@ -112,7 +112,7 @@ export const MinimalistExecutive: React.FC<TemplateProps> = ({ data, styleUtils 
   const renderSkills = () => (
     <div key="skills" className="w-full">
       {renderSectionHeader('Core Competencies')}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1 text-xs">
+      <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-xs">
         {skills.map((skill) => (
           <div key={skill.id} className="flex items-start py-0.5 border-b border-gray-50">
             <span className="font-semibold text-gray-900 shrink-0 mr-1.5">{skill.category}:</span>
@@ -244,7 +244,7 @@ export const MinimalistExecutive: React.FC<TemplateProps> = ({ data, styleUtils 
             {personalInfo.name}
           </h1>
           {personalInfo.title && (
-            <p className="text-xs uppercase tracking-widest text-gray-655 font-semibold">{personalInfo.title}</p>
+            <p className="text-xs uppercase tracking-widest text-gray-500 font-semibold">{personalInfo.title}</p>
           )}
           <div className={`text-xs text-gray-500 flex flex-wrap gap-x-3 gap-y-0.5 ${isEditorial ? 'justify-center' : 'justify-start'} print:text-black`}>
             {allContacts.map((contact, idx) => (

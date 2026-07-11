@@ -47,9 +47,9 @@ const templateOptions = [
   { value: 'split-left',      label: 'Left Sidebar Tech (Dark)',         group: 'Modern Split'           },
   { value: 'split-right',     label: 'Right Sidebar Professional',       group: 'Modern Split'           },
   { value: 'split-compact',   label: 'Dual Column Compact',              group: 'Modern Split'           },
-  { value: 'creative-accent', label: 'Slate & Accent (Pill tags)',       group: 'Creative Tech / UI-UX'  },
-  { value: 'creative-top',    label: 'Dark Block Banner',                group: 'Creative Tech / UI-UX'  },
-  { value: 'creative-grid',   label: 'Structured Bordered Grid',         group: 'Creative Tech / UI-UX'  },
+  { value: 'creative-bold',      label: 'Bold Modern Colorblock',           group: 'Creative Tech / UI-UX'  },
+  { value: 'creative-sidebar',   label: 'Elegant Split Sidebar',            group: 'Creative Tech / UI-UX'  },
+  { value: 'creative-minimal',   label: 'Minimalist Elegant Border',        group: 'Creative Tech / UI-UX'  },
 ];
 
 const fontOptions = [
