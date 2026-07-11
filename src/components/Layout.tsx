@@ -53,6 +53,8 @@ const templateOptions = [
   { value: 'gamer-arcade',       label: 'Retro Arcade 8-Bit',               group: 'Gamer & Funky Theme'    },
   { value: 'gamer-cyberpunk',    label: 'Cyberpunk Neon Console',           group: 'Gamer & Funky Theme'    },
   { value: 'gamer-comic',        label: 'Comic Pop Neobrutalist',           group: 'Gamer & Funky Theme'    },
+  { value: 'fun-google',         label: 'Google Search Results',            group: 'FUN'                    },
+  { value: 'fun-facebook',       label: 'Facebook Social Feed',             group: 'FUN'                    },
 ];
 
 const fontOptions = [

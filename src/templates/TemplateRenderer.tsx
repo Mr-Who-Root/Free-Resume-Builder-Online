@@ -5,6 +5,7 @@ import { MinimalistExecutive } from './MinimalistExecutive';
 import { ModernSplit } from './ModernSplit';
 import { CreativeTech } from './CreativeTech';
 import { FunkyGamer } from './FunkyGamer';
+import { FunBrand } from './FunBrand';
 
 interface TemplateRendererProps {
   data: ResumeData;
@@ -154,6 +155,9 @@ export const TemplateRenderer: React.FC<TemplateRendererProps> = ({ data }) => {
   }
   if (templateId.startsWith('gamer-')) {
     return <FunkyGamer data={data} styleUtils={styleUtils} />;
+  }
+  if (templateId.startsWith('fun-')) {
+    return <FunBrand data={data} styleUtils={styleUtils} />;
   }
 
   return <DeFactoTech data={data} styleUtils={styleUtils} />;
