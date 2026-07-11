@@ -50,6 +50,9 @@ const templateOptions = [
   { value: 'creative-bold',      label: 'Bold Modern Colorblock',           group: 'Creative Tech / UI-UX'  },
   { value: 'creative-sidebar',   label: 'Elegant Split Sidebar',            group: 'Creative Tech / UI-UX'  },
   { value: 'creative-minimal',   label: 'Minimalist Elegant Border',        group: 'Creative Tech / UI-UX'  },
+  { value: 'gamer-arcade',       label: 'Retro Arcade 8-Bit',               group: 'Gamer & Funky Theme'    },
+  { value: 'gamer-cyberpunk',    label: 'Cyberpunk Neon Console',           group: 'Gamer & Funky Theme'    },
+  { value: 'gamer-comic',        label: 'Comic Pop Neobrutalist',           group: 'Gamer & Funky Theme'    },
 ];
 
 const fontOptions = [
