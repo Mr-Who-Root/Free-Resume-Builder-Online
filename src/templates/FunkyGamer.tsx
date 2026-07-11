@@ -1,6 +1,7 @@
 import React from 'react';
 import type { ResumeData, CustomSection } from '../types/resume';
 import { MarkdownText } from '../components/MarkdownText';
+import { SocialLinkBar } from '../components/SocialLinkBar';
 
 interface TemplateProps {
   data: ResumeData;
@@ -444,6 +445,15 @@ export const FunkyGamer: React.FC<TemplateProps> = ({ data, styleUtils }) => {
               </span>
             ))}
           </div>
+          {personalInfo.socialLinks && personalInfo.socialLinks.length > 0 && (
+            <SocialLinkBar
+              links={personalInfo.socialLinks}
+              layout="row"
+              className="justify-end mt-1"
+              iconSize={11}
+              textClass={isComic ? 'text-slate-900 font-bold' : isCyber ? 'text-green-400' : 'text-slate-500'}
+            />
+          )}
         </div>
 
         {/* Profile Summary */}

@@ -374,6 +374,15 @@ export const CreativeTech: React.FC<TemplateProps> = ({ data, styleUtils }) => {
               <span key={idx} className="whitespace-nowrap">{contact}</span>
             ))}
           </div>
+          {personalInfo.socialLinks && personalInfo.socialLinks.length > 0 && (
+            <SocialLinkBar
+              links={personalInfo.socialLinks}
+              layout="row"
+              className="justify-end mt-1"
+              iconSize={11}
+              textClass="text-gray-500 print:text-black"
+            />
+          )}
         </div>
 
         {/* Split Body Grid */}
@@ -433,6 +442,15 @@ export const CreativeTech: React.FC<TemplateProps> = ({ data, styleUtils }) => {
             <span key={idx} className="whitespace-nowrap">{contact}</span>
           ))}
         </div>
+        {personalInfo.socialLinks && personalInfo.socialLinks.length > 0 && (
+          <SocialLinkBar
+            links={personalInfo.socialLinks}
+            layout="row"
+            className="justify-end mt-1"
+            iconSize={11}
+            textClass="text-gray-500 print:text-black"
+          />
+        )}
       </div>
 
       {/* Summary */}

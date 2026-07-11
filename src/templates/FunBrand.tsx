@@ -1,6 +1,7 @@
 import React from 'react';
 import type { ResumeData } from '../types/resume';
 import { MarkdownText } from '../components/MarkdownText';
+import { SocialLinkBar } from '../components/SocialLinkBar';
 
 interface TemplateProps {
   data: ResumeData;
@@ -142,6 +143,14 @@ const GoogleTemplate: React.FC<{ data: ResumeData }> = ({ data }) => {
               <span className="text-xs">{c.val}</span>
             </div>
           ))}
+          {/* Social links as extra tabs */}
+          {personalInfo.socialLinks && personalInfo.socialLinks.length > 0 &&
+            personalInfo.socialLinks.map((link, i) => (
+              <div key={i} className="flex items-center gap-1 text-gray-700 pb-2">
+                <SocialLinkBar links={[link]} layout="row" iconSize={11} textClass="text-blue-600" />
+              </div>
+            ))
+          }
         </div>
       </div>
 
@@ -345,6 +354,17 @@ const FacebookTemplate: React.FC<{ data: ResumeData }> = ({ data }) => {
                 </div>
               ))}
             </div>
+            {personalInfo.socialLinks && personalInfo.socialLinks.length > 0 && (
+              <div className="mt-2">
+                <SocialLinkBar
+                  links={personalInfo.socialLinks}
+                  layout="row"
+                  className="flex-wrap"
+                  iconSize={12}
+                  textClass="text-blue-600 hover:underline"
+                />
+              </div>
+            )}
             {personalInfo.summary && (
               <div className="mt-2 text-xs text-gray-600 leading-relaxed">
                 <MarkdownText text={personalInfo.summary} />
