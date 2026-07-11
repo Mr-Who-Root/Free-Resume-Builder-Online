@@ -28,6 +28,7 @@ import {
   FolderPlus,
   ArrowRightLeft
 } from 'lucide-react';
+import { MarkdownTextarea } from './MarkdownTextarea';
 
 interface FormPanelProps {
   data: ResumeData;
@@ -659,17 +660,14 @@ export const FormPanel: React.FC<FormPanelProps> = ({ data, onChange }) => {
                 </div>
               </div>
 
-              <div className="space-y-1">
-                <label htmlFor="summary-input" className="text-xs text-slate-400 font-semibold block">Professional Summary (Markdown allowed)</label>
-                <textarea
-                  id="summary-input"
-                  rows={3}
-                  value={data.personalInfo.summary}
-                  onChange={(e) => handlePersonalInfoChange('summary', e.target.value)}
-                  placeholder="Senior developer with 5+ years of experience. Specialized in **React** and *TypeScript*."
-                  className="w-full text-sm bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 resize-y"
-                />
-              </div>
+              <MarkdownTextarea
+                id="summary-input"
+                label="Professional Summary (Markdown allowed)"
+                rows={3}
+                value={data.personalInfo.summary}
+                onChange={(val) => handlePersonalInfoChange('summary', val)}
+                placeholder="Senior developer with 5+ years of experience. Specialized in **React** and *TypeScript*."
+              />
 
               {/* Custom Contact Fields */}
               <div className="space-y-3 pt-3 border-t border-slate-800/80">
@@ -840,19 +838,17 @@ export const FormPanel: React.FC<FormPanelProps> = ({ data, onChange }) => {
                               </div>
                             </div>
 
-                            <div className="space-y-1">
-                              <label className="text-[11px] text-slate-400 font-semibold block">Description & Bullet Points (Markdown allowed)</label>
-                              <textarea
-                                rows={3}
-                                value={exp.description}
-                                onChange={(e) => {
-                                  const updated = data.experience.map(item => item.id === exp.id ? { ...item, description: e.target.value } : item);
-                                  updateField('experience', updated);
-                                }}
-                                placeholder="• Developed scalable UI components using **React**&#10;• Led optimization refactors reducing LCP by *35%*"
-                                className="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2 text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 resize-y"
-                              />
-                            </div>
+                            <MarkdownTextarea
+                              id={`exp-desc-${exp.id}`}
+                              label="Description & Bullet Points (Markdown allowed)"
+                              rows={3}
+                              value={exp.description}
+                              onChange={(val) => {
+                                const updated = data.experience.map(item => item.id === exp.id ? { ...item, description: val } : item);
+                                updateField('experience', updated);
+                              }}
+                              placeholder="• Developed scalable UI components using **React**&#10;• Led optimization refactors reducing LCP by *35%*"
+                            />
 
                             {/* Custom Fields for Experience */}
                             <div className="space-y-2.5 pt-2.5 border-t border-slate-800/60">
@@ -1288,19 +1284,17 @@ export const FormPanel: React.FC<FormPanelProps> = ({ data, onChange }) => {
                               />
                             </div>
 
-                            <div className="space-y-1">
-                              <label className="text-[11px] text-slate-400 font-semibold block">Project Description (Markdown allowed)</label>
-                              <textarea
-                                rows={3}
-                                value={proj.description}
-                                onChange={(e) => {
-                                  const updated = data.projects.map(item => item.id === proj.id ? { ...item, description: e.target.value } : item);
-                                  updateField('projects', updated);
-                                }}
-                                placeholder="Built a client-side exporter with **60fps** render speeds."
-                                className="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2 text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 resize-y"
-                              />
-                            </div>
+                            <MarkdownTextarea
+                              id={`proj-desc-${proj.id}`}
+                              label="Project Description (Markdown allowed)"
+                              rows={3}
+                              value={proj.description}
+                              onChange={(val) => {
+                                const updated = data.projects.map(item => item.id === proj.id ? { ...item, description: val } : item);
+                                updateField('projects', updated);
+                              }}
+                              placeholder="Built a client-side exporter with **60fps** render speeds."
+                            />
 
                             {/* Custom Fields for Projects */}
                             <div className="space-y-2.5 pt-2.5 border-t border-slate-800/60">
@@ -1474,23 +1468,26 @@ export const FormPanel: React.FC<FormPanelProps> = ({ data, onChange }) => {
                               <div className="space-y-2.5">
                                 {cs.fields.map((f) => (
                                   <div key={f.id} className="space-y-1">
-                                    <label className="text-[11px] text-slate-400 font-semibold block">{f.label}</label>
                                     {f.type === 'textarea' ? (
-                                      <textarea
+                                      <MarkdownTextarea
+                                        id={`custom-${cs.id}-${item.id}-${f.name}`}
+                                        label={f.label}
                                         rows={3}
                                         value={item[f.name] || ''}
-                                        onChange={(e) => handleCustomItemChange(cs.id, item.id, f.name, e.target.value)}
-                                        placeholder={`Enter details (Markdown allowed)`}
-                                        className="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2 text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 resize-y"
+                                        onChange={(val) => handleCustomItemChange(cs.id, item.id, f.name, val)}
+                                        placeholder="Enter details (Markdown allowed)"
                                       />
                                     ) : (
-                                      <input
-                                        type="text"
-                                        value={item[f.name] || ''}
-                                        onChange={(e) => handleCustomItemChange(cs.id, item.id, f.name, e.target.value)}
-                                        placeholder={`Enter ${f.label.toLowerCase()}`}
-                                        className="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2 text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                                      />
+                                      <>
+                                        <label className="text-[11px] text-slate-400 font-semibold block">{f.label}</label>
+                                        <input
+                                          type="text"
+                                          value={item[f.name] || ''}
+                                          onChange={(e) => handleCustomItemChange(cs.id, item.id, f.name, e.target.value)}
+                                          placeholder={`Enter ${f.label.toLowerCase()}`}
+                                          className="w-full text-xs bg-slate-950 border border-slate-800 rounded-lg p-2 text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                        />
+                                      </>
                                     )}
                                   </div>
                                 ))}
