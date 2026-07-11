@@ -70,7 +70,7 @@ export const SAMPLE_RESUME_DATA: ResumeData = {
     {
       "id": "skill-3",
       "category": "Tools & Infrastructure",
-      "skills": "Docker, AWS (S3/EC2), Elastic Search, FortiSOAR, Nmap, Burp Suite, Wireshark, Nuclei, Metasploit, Git, PostgreSQL, Redis, CI/CD (GitHub Actions),"
+      "skills": "Docker, AWS (S3/EC2), Elastic Search, FortiSOAR, Nmap, Burp Suite, Wireshark, Nuclei, Metasploit, Git, PostgreSQL, Redis, CI/CD (GitHub Actions)"
     }
   ],
   "projects": [
