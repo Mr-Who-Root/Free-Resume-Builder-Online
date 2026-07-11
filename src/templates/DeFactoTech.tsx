@@ -15,9 +15,8 @@ interface TemplateProps {
     accentBorder: string;
   };
 }
-
 export const DeFactoTech: React.FC<TemplateProps> = ({ data, styleUtils }) => {
-  const { personalInfo, experience, education, skills, projects, customSections, sectionOrder } = data;
+  const { personalInfo, experience, education, skills, projects, customSections, sectionOrder, styles } = data;
   const { fontClass, sizeClass, leadingClass, spacingClass, marginClass, accentText, accentBorder } = styleUtils;
   const isCompact = data.styles.templateId === 'tech-compact';
   const isAcademic = data.styles.templateId === 'tech-academic';
@@ -276,7 +275,7 @@ export const DeFactoTech: React.FC<TemplateProps> = ({ data, styleUtils }) => {
       {/* Dynamic Sections reordered */}
       <div className="space-y-4 mt-2">
         {sectionOrder
-          .filter(id => id !== 'personalInfo')
+          .filter(id => id !== 'personalInfo' && !(styles.hiddenSections || []).includes(id))
           .map(id => renderSection(id))}
       </div>
     </div>

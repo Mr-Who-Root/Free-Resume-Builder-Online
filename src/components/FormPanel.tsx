@@ -26,7 +26,9 @@ import {
   Sliders, 
   FolderGit2, 
   FolderPlus,
-  ArrowRightLeft
+  ArrowRightLeft,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import { MarkdownTextarea } from './MarkdownTextarea';
 
@@ -427,6 +429,21 @@ export const FormPanel: React.FC<FormPanelProps> = ({ data, onChange }) => {
     });
   };
 
+  const toggleHideSection = (sectionId: string) => {
+    const hiddenList = data.styles.hiddenSections || [];
+    const newHidden = hiddenList.includes(sectionId)
+      ? hiddenList.filter(id => id !== sectionId)
+      : [...hiddenList, sectionId];
+    
+    onChange({
+      ...data,
+      styles: {
+        ...data.styles,
+        hiddenSections: newHidden
+      }
+    });
+  };
+
   // Dynamic values editor for fields in Custom Sections
   const handleCustomItemChange = (sectionId: string, itemId: string, fieldName: string, value: string) => {
     const sections = data.customSections.map(cs => {
@@ -533,16 +550,39 @@ export const FormPanel: React.FC<FormPanelProps> = ({ data, onChange }) => {
         
         {/* PERSONAL INFO PANEL */}
         <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg">
-          <button 
-            onClick={() => toggleSection('personalInfo')}
-            className="w-full flex items-center justify-between p-4 bg-slate-950/40 font-bold hover:bg-slate-950/70 transition"
-          >
-            <span className="flex items-center gap-2 text-slate-200">
+          <div className="w-full flex items-center justify-between p-4 bg-slate-950/40 font-bold border-b border-slate-850">
+            <button 
+              onClick={() => toggleSection('personalInfo')}
+              className="flex items-center gap-2 text-slate-200 text-left flex-1"
+            >
               <User className="w-4 h-4 text-indigo-400" />
-              <span>Contact & Summary</span>
-            </span>
-            {expandedSections.personalInfo ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-          </button>
+              <span className={(data.styles.hiddenSections || []).includes('personalInfo') ? "line-through text-slate-500 font-normal italic" : ""}>
+                Contact & Summary
+              </span>
+            </button>
+            <div className="flex items-center gap-2 text-slate-400 ml-3">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleHideSection('personalInfo');
+                }}
+                className="p-1 rounded hover:text-slate-100 hover:bg-slate-800 transition"
+                title={(data.styles.hiddenSections || []).includes('personalInfo') ? "Show Section" : "Hide Section"}
+              >
+                {(data.styles.hiddenSections || []).includes('personalInfo') ? (
+                  <EyeOff className="w-4 h-4 text-rose-400" />
+                ) : (
+                  <Eye className="w-4 h-4 text-emerald-400" />
+                )}
+              </button>
+              <button 
+                onClick={() => toggleSection('personalInfo')}
+                className="p-1 rounded hover:text-slate-100 hover:bg-slate-800 transition"
+              >
+                {expandedSections.personalInfo ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              </button>
+            </div>
+          </div>
           
           {expandedSections.personalInfo && (
             <div className="p-4 space-y-4 border-t border-slate-850">
@@ -722,16 +762,39 @@ export const FormPanel: React.FC<FormPanelProps> = ({ data, onChange }) => {
 
         {/* WORK EXPERIENCE PANEL */}
         <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg">
-          <button 
-            onClick={() => toggleSection('experience')}
-            className="w-full flex items-center justify-between p-4 bg-slate-950/40 font-bold hover:bg-slate-950/70 transition"
-          >
-            <span className="flex items-center gap-2 text-slate-200">
+          <div className="w-full flex items-center justify-between p-4 bg-slate-950/40 font-bold border-b border-slate-850">
+            <button 
+              onClick={() => toggleSection('experience')}
+              className="flex items-center gap-2 text-slate-200 text-left flex-1"
+            >
               <Briefcase className="w-4 h-4 text-indigo-400" />
-              <span>Work Experience</span>
-            </span>
-            {expandedSections.experience ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-          </button>
+              <span className={(data.styles.hiddenSections || []).includes('experience') ? "line-through text-slate-500 font-normal italic" : ""}>
+                Work Experience
+              </span>
+            </button>
+            <div className="flex items-center gap-2 text-slate-400 ml-3">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleHideSection('experience');
+                }}
+                className="p-1 rounded hover:text-slate-100 hover:bg-slate-800 transition"
+                title={(data.styles.hiddenSections || []).includes('experience') ? "Show Section" : "Hide Section"}
+              >
+                {(data.styles.hiddenSections || []).includes('experience') ? (
+                  <EyeOff className="w-4 h-4 text-rose-400" />
+                ) : (
+                  <Eye className="w-4 h-4 text-emerald-400" />
+                )}
+              </button>
+              <button 
+                onClick={() => toggleSection('experience')}
+                className="p-1 rounded hover:text-slate-100 hover:bg-slate-800 transition"
+              >
+                {expandedSections.experience ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              </button>
+            </div>
+          </div>
 
           {expandedSections.experience && (
             <div className="p-4 space-y-4 border-t border-slate-850">
@@ -911,16 +974,39 @@ export const FormPanel: React.FC<FormPanelProps> = ({ data, onChange }) => {
 
         {/* EDUCATION PANEL */}
         <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg">
-          <button 
-            onClick={() => toggleSection('education')}
-            className="w-full flex items-center justify-between p-4 bg-slate-950/40 font-bold hover:bg-slate-950/70 transition"
-          >
-            <span className="flex items-center gap-2 text-slate-200">
+          <div className="w-full flex items-center justify-between p-4 bg-slate-950/40 font-bold border-b border-slate-850">
+            <button 
+              onClick={() => toggleSection('education')}
+              className="flex items-center gap-2 text-slate-200 text-left flex-1"
+            >
               <GraduationCap className="w-4 h-4 text-indigo-400" />
-              <span>Education</span>
-            </span>
-            {expandedSections.education ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-          </button>
+              <span className={(data.styles.hiddenSections || []).includes('education') ? "line-through text-slate-500 font-normal italic" : ""}>
+                Education
+              </span>
+            </button>
+            <div className="flex items-center gap-2 text-slate-400 ml-3">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleHideSection('education');
+                }}
+                className="p-1 rounded hover:text-slate-100 hover:bg-slate-800 transition"
+                title={(data.styles.hiddenSections || []).includes('education') ? "Show Section" : "Hide Section"}
+              >
+                {(data.styles.hiddenSections || []).includes('education') ? (
+                  <EyeOff className="w-4 h-4 text-rose-400" />
+                ) : (
+                  <Eye className="w-4 h-4 text-emerald-400" />
+                )}
+              </button>
+              <button 
+                onClick={() => toggleSection('education')}
+                className="p-1 rounded hover:text-slate-100 hover:bg-slate-800 transition"
+              >
+                {expandedSections.education ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              </button>
+            </div>
+          </div>
 
           {expandedSections.education && (
             <div className="p-4 space-y-4 border-t border-slate-850">
@@ -1107,16 +1193,39 @@ export const FormPanel: React.FC<FormPanelProps> = ({ data, onChange }) => {
 
         {/* SKILLS PANEL */}
         <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg">
-          <button 
-            onClick={() => toggleSection('skills')}
-            className="w-full flex items-center justify-between p-4 bg-slate-950/40 font-bold hover:bg-slate-950/70 transition"
-          >
-            <span className="flex items-center gap-2 text-slate-200">
+          <div className="w-full flex items-center justify-between p-4 bg-slate-950/40 font-bold border-b border-slate-850">
+            <button 
+              onClick={() => toggleSection('skills')}
+              className="flex items-center gap-2 text-slate-200 text-left flex-1"
+            >
               <Sliders className="w-4 h-4 text-indigo-400" />
-              <span>Skills Categories</span>
-            </span>
-            {expandedSections.skills ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-          </button>
+              <span className={(data.styles.hiddenSections || []).includes('skills') ? "line-through text-slate-500 font-normal italic" : ""}>
+                Skills Categories
+              </span>
+            </button>
+            <div className="flex items-center gap-2 text-slate-400 ml-3">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleHideSection('skills');
+                }}
+                className="p-1 rounded hover:text-slate-100 hover:bg-slate-800 transition"
+                title={(data.styles.hiddenSections || []).includes('skills') ? "Show Section" : "Hide Section"}
+              >
+                {(data.styles.hiddenSections || []).includes('skills') ? (
+                  <EyeOff className="w-4 h-4 text-rose-400" />
+                ) : (
+                  <Eye className="w-4 h-4 text-emerald-400" />
+                )}
+              </button>
+              <button 
+                onClick={() => toggleSection('skills')}
+                className="p-1 rounded hover:text-slate-100 hover:bg-slate-800 transition"
+              >
+                {expandedSections.skills ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              </button>
+            </div>
+          </div>
 
           {expandedSections.skills && (
             <div className="p-4 space-y-4 border-t border-slate-850">
@@ -1196,16 +1305,39 @@ export const FormPanel: React.FC<FormPanelProps> = ({ data, onChange }) => {
 
         {/* PROJECTS PANEL */}
         <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg">
-          <button 
-            onClick={() => toggleSection('projects')}
-            className="w-full flex items-center justify-between p-4 bg-slate-950/40 font-bold hover:bg-slate-950/70 transition"
-          >
-            <span className="flex items-center gap-2 text-slate-200">
+          <div className="w-full flex items-center justify-between p-4 bg-slate-950/40 font-bold border-b border-slate-850">
+            <button 
+              onClick={() => toggleSection('projects')}
+              className="flex items-center gap-2 text-slate-200 text-left flex-1"
+            >
               <FolderGit2 className="w-4 h-4 text-indigo-400" />
-              <span>Projects</span>
-            </span>
-            {expandedSections.projects ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-          </button>
+              <span className={(data.styles.hiddenSections || []).includes('projects') ? "line-through text-slate-500 font-normal italic" : ""}>
+                Projects
+              </span>
+            </button>
+            <div className="flex items-center gap-2 text-slate-400 ml-3">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleHideSection('projects');
+                }}
+                className="p-1 rounded hover:text-slate-100 hover:bg-slate-800 transition"
+                title={(data.styles.hiddenSections || []).includes('projects') ? "Show Section" : "Hide Section"}
+              >
+                {(data.styles.hiddenSections || []).includes('projects') ? (
+                  <EyeOff className="w-4 h-4 text-rose-400" />
+                ) : (
+                  <Eye className="w-4 h-4 text-emerald-400" />
+                )}
+              </button>
+              <button 
+                onClick={() => toggleSection('projects')}
+                className="p-1 rounded hover:text-slate-100 hover:bg-slate-800 transition"
+              >
+                {expandedSections.projects ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              </button>
+            </div>
+          </div>
 
           {expandedSections.projects && (
             <div className="p-4 space-y-4 border-t border-slate-850">
@@ -1356,18 +1488,53 @@ export const FormPanel: React.FC<FormPanelProps> = ({ data, onChange }) => {
         </div>
 
         {/* DYNAMIC CUSTOM SECTIONS RENDERER */}
-        {data.customSections.map((cs) => (
-          <div key={cs.id} className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg">
-            <button 
-              onClick={() => toggleSection(cs.id)}
-              className="w-full flex items-center justify-between p-4 bg-slate-950/40 font-bold hover:bg-slate-950/70 transition"
-            >
-              <span className="flex items-center gap-2 text-slate-200">
-                <Layers className="w-4 h-4 text-indigo-400" />
-                <span>{cs.title} (Custom)</span>
-              </span>
-              {expandedSections[cs.id] ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-            </button>
+        {data.customSections.map((cs) => {
+          const isHidden = (data.styles.hiddenSections || []).includes(cs.id);
+          return (
+            <div key={cs.id} className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg">
+              <div className="w-full flex items-center justify-between p-4 bg-slate-950/40 font-bold border-b border-slate-850">
+                <button 
+                  onClick={() => toggleSection(cs.id)}
+                  className="flex items-center gap-2 text-slate-200 text-left flex-1"
+                >
+                  <Layers className="w-4 h-4 text-indigo-400" />
+                  <span className={isHidden ? "line-through text-slate-500 font-normal italic" : ""}>
+                    {cs.title} (Custom)
+                  </span>
+                </button>
+                <div className="flex items-center gap-2 text-slate-400 ml-3">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleHideSection(cs.id);
+                    }}
+                    className="p-1 rounded hover:text-slate-100 hover:bg-slate-800 transition"
+                    title={isHidden ? "Show Section" : "Hide Section"}
+                  >
+                    {isHidden ? (
+                      <EyeOff className="w-4 h-4 text-rose-400" />
+                    ) : (
+                      <Eye className="w-4 h-4 text-emerald-400" />
+                    )}
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteCustomSection(cs.id);
+                    }}
+                    className="p-1 rounded hover:text-rose-450 hover:bg-slate-800 transition"
+                    title="Delete Section"
+                  >
+                    <Trash2 className="w-4 h-4 text-rose-450" />
+                  </button>
+                  <button 
+                    onClick={() => toggleSection(cs.id)}
+                    className="p-1 rounded hover:text-slate-100 hover:bg-slate-800 transition"
+                  >
+                    {expandedSections[cs.id] ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
 
             {expandedSections[cs.id] && (
               <div className="p-4 space-y-4 border-t border-slate-850">
@@ -1511,7 +1678,8 @@ export const FormPanel: React.FC<FormPanelProps> = ({ data, onChange }) => {
               </div>
             )}
           </div>
-        ))}
+          );
+        })}
 
       </DragDropContext>
 

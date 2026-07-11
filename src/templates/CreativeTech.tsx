@@ -19,7 +19,7 @@ interface TemplateProps {
 }
 
 export const CreativeTech: React.FC<TemplateProps> = ({ data, styleUtils }) => {
-  const { personalInfo, experience, education, skills, projects, customSections, sectionOrder } = data;
+  const { personalInfo, experience, education, skills, projects, customSections, sectionOrder, styles } = data;
   const { fontClass, sizeClass, leadingClass, marginClass, accentText, accentBgLight } = styleUtils;
   
   const templateId = data.styles.templateId;
@@ -325,7 +325,7 @@ export const CreativeTech: React.FC<TemplateProps> = ({ data, styleUtils }) => {
         {/* Dynamic section loops (reordered by drag and drop) */}
         <div className={isGrid ? "grid grid-cols-1 md:grid-cols-2 gap-4 mt-2" : "space-y-4 mt-2"}>
           {sectionOrder
-            .filter(id => id !== 'personalInfo')
+            .filter(id => id !== 'personalInfo' && !(styles.hiddenSections || []).includes(id))
             .map(id => {
               const element = renderSection(id);
               if (!element) return null;

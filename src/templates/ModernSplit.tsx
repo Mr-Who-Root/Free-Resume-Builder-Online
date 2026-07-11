@@ -17,7 +17,7 @@ interface TemplateProps {
 }
 
 export const ModernSplit: React.FC<TemplateProps> = ({ data, styleUtils }) => {
-  const { personalInfo, experience, education, skills, projects, customSections, sectionOrder } = data;
+  const { personalInfo, experience, education, skills, projects, customSections, sectionOrder, styles } = data;
   const { fontClass, sizeClass, leadingClass, accentColor } = styleUtils;
   
   const templateId = data.styles.templateId;
@@ -43,10 +43,10 @@ export const ModernSplit: React.FC<TemplateProps> = ({ data, styleUtils }) => {
   const mainSectionIds = ['experience', 'education', 'projects'];
 
   // Respect the overall sectionOrder by sorting based on their index in sectionOrder
-  const sortedSidebarIds = sidebarSectionIds.filter(id => sectionOrder.includes(id))
+  const sortedSidebarIds = sidebarSectionIds.filter(id => sectionOrder.includes(id) && !(styles.hiddenSections || []).includes(id))
     .sort((a, b) => sectionOrder.indexOf(a) - sectionOrder.indexOf(b));
     
-  const sortedMainIds = mainSectionIds.filter(id => sectionOrder.includes(id))
+  const sortedMainIds = mainSectionIds.filter(id => sectionOrder.includes(id) && !(styles.hiddenSections || []).includes(id))
     .sort((a, b) => sectionOrder.indexOf(a) - sectionOrder.indexOf(b));
 
   const renderSectionHeader = (title: string, onDark: boolean = false) => (

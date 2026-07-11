@@ -17,7 +17,7 @@ interface TemplateProps {
 }
 
 export const MinimalistExecutive: React.FC<TemplateProps> = ({ data, styleUtils }) => {
-  const { personalInfo, experience, education, skills, projects, customSections, sectionOrder } = data;
+  const { personalInfo, experience, education, skills, projects, customSections, sectionOrder, styles } = data;
   const { fontClass, sizeClass, leadingClass, marginClass } = styleUtils;
   const isClassic = data.styles.templateId === 'exec-classic';
   const isEditorial = data.styles.templateId === 'exec-editorial';
@@ -268,7 +268,7 @@ export const MinimalistExecutive: React.FC<TemplateProps> = ({ data, styleUtils 
       {/* Layout Grid / Flow */}
       <div className="space-y-5">
         {sectionOrder
-          .filter(id => id !== 'personalInfo')
+          .filter(id => id !== 'personalInfo' && !(styles.hiddenSections || []).includes(id))
           .map(id => renderSection(id))}
       </div>
     </div>

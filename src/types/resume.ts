@@ -73,6 +73,7 @@ export interface TemplateStyles {
   spacing: 'compact' | 'normal' | 'spacious';
   margin: 'small' | 'medium' | 'large';
   colorTheme: 'navy' | 'slate' | 'emerald' | 'indigo' | 'crimson' | 'charcoal';
+  hiddenSections?: string[];
 }
 
 export interface ResumeData {

@@ -6,8 +6,8 @@ export const SAMPLE_RESUME_DATA: ResumeData = {
   "personalInfo": {
     "name": "Govind S R",
     "title": "Cyber Security Engineer",
-    "email": "letter2gocind@gmail.com",
-    "phone": "+919946247235",
+    "email": "letter2govind@gmail.com",
+    "phone": "+919999999999",
     "website": "github.com/Mr-Who-Root",
     "location": "Keralam, India",
     "summary": "Experienced Cyber Security Engineer with a proven track record of identifying and resolving complex network and system security issues. Skilled at developing secure infrastructure solutions and security protocols.",
