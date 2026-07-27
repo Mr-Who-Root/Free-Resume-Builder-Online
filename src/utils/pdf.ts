@@ -70,7 +70,8 @@ export const downloadPdf = (resumeElementId: string, filename: string, pageSize:
   const printStyle = iframeDoc.createElement('style');
   printStyle.textContent = `
     @page {
-      margin: 15mm;
+      /* Setting margin to 0 suppresses browser automatic date/title header & URL footer */
+      margin: 0;
       size: ${pageSize === 'letter' ? 'letter' : 'A4'};
     }
     html, body {
@@ -80,12 +81,30 @@ export const downloadPdf = (resumeElementId: string, filename: string, pageSize:
       color: black !important;
       -webkit-print-color-adjust: exact !important;
       print-color-adjust: exact !important;
+      width: 100% !important;
     }
     
-    .print-container {
+    .print-table {
       width: 100% !important;
+      border-collapse: collapse !important;
       margin: 0 !important;
       padding: 0 !important;
+    }
+
+    .print-header-space {
+      height: 15mm !important;
+    }
+
+    .print-footer-space {
+      height: 15mm !important;
+    }
+
+    .print-content-cell {
+      padding-left: 15mm !important;
+      padding-right: 15mm !important;
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
+      vertical-align: top !important;
     }
 
     /* Ensure the inner paper has no shadows or outer margins when printing */
@@ -123,11 +142,29 @@ export const downloadPdf = (resumeElementId: string, filename: string, pageSize:
   // Set document title so browser uses it as default PDF filename when saving
   iframeDoc.title = filename.replace(/\.pdf$/i, '');
 
-  // Wrap element content
+  // Wrap element content in a print table so thead and tfoot generate top/bottom margins on every page
   iframeDoc.body.innerHTML = `
-    <div class="print-container">
-      ${element.innerHTML}
-    </div>
+    <table class="print-table">
+      <thead>
+        <tr>
+          <td class="print-header-space"></td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="print-content-cell">
+            <div class="print-container">
+              ${element.innerHTML}
+            </div>
+          </td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td class="print-footer-space"></td>
+        </tr>
+      </tfoot>
+    </table>
   `;
 
   // Asynchronously trigger printing when all styles and fonts are fully resolved
