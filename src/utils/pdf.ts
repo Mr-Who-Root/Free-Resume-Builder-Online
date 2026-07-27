@@ -70,9 +70,7 @@ export const downloadPdf = (resumeElementId: string, filename: string, pageSize:
   const printStyle = iframeDoc.createElement('style');
   printStyle.textContent = `
     @page {
-      /* Setting margin to 0 suppresses the browser's automatic date/title header
-         and URL footer that browsers inject into the page margin area. */
-      margin: 0;
+      margin: 15mm;
       size: ${pageSize === 'letter' ? 'letter' : 'A4'};
     }
     html, body {
@@ -85,9 +83,8 @@ export const downloadPdf = (resumeElementId: string, filename: string, pageSize:
     }
     
     .print-container {
-      /* Replicate 15mm top/bottom/left/right page margins cleanly within the page */
-      width: calc(100% - 30mm) !important;
-      margin: 15mm auto !important;
+      width: 100% !important;
+      margin: 0 !important;
       padding: 0 !important;
     }
 
@@ -98,7 +95,6 @@ export const downloadPdf = (resumeElementId: string, filename: string, pageSize:
       margin: 0 !important;
       width: 100% !important;
       min-height: 0 !important;
-      padding: 0 !important;
     }
 
     /* Print-specific layout fixes */
@@ -124,8 +120,8 @@ export const downloadPdf = (resumeElementId: string, filename: string, pageSize:
   `;
   iframeDoc.head.appendChild(printStyle);
 
-  // Set the document title which browser uses as the default PDF filename
-  iframeDoc.title = filename.replace(/\.pdf$/i, '');
+  // Set title to empty to avoid printing document title in header
+  iframeDoc.title = '';
 
   // Wrap element content
   iframeDoc.body.innerHTML = `
