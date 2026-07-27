@@ -71,17 +71,13 @@ export const downloadPdf = (resumeElementId: string, filename: string, pageSize:
   printStyle.textContent = `
     @page {
       /* Setting margin to 0 suppresses the browser's automatic date/title header
-         and URL footer that browsers inject into the margin area by default. */
+         and URL footer that browsers inject into the page margin area. */
       margin: 0;
       size: ${pageSize === 'letter' ? 'letter' : 'A4'};
     }
     html, body {
       margin: 0 !important;
-      /* padding:15mm + box-sizing:border-box creates the 15mm gutters inside the
-         zero-margin page, replicating the effect of @page{margin:15mm} scaling
-         without leaving space for browser date/title headers or URL footers. */
-      padding: 15mm !important;
-      box-sizing: border-box !important;
+      padding: 0 !important;
       background: white !important;
       color: black !important;
       -webkit-print-color-adjust: exact !important;
@@ -89,10 +85,9 @@ export const downloadPdf = (resumeElementId: string, filename: string, pageSize:
     }
     
     .print-container {
-      /* Use 100% so the container fills the padded body area instead of
-         overflowing at a fixed 816px on a zero-margin page. */
-      width: 100% !important;
-      margin: 0 !important;
+      /* Replicate 15mm top/bottom/left/right page margins cleanly within the page */
+      width: calc(100% - 30mm) !important;
+      margin: 15mm auto !important;
       padding: 0 !important;
     }
 
