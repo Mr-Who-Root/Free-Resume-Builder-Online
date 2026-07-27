@@ -66,8 +66,6 @@ export const downloadPdf = (resumeElementId: string, filename: string, pageSize:
   iframeDoc.head.appendChild(googleFontLink);
   styleLoadPromises.push(googleFontPromise);
 
-  const pageWidth = pageSize === 'letter' ? '816px' : '794px';
-
   // Ensure high quality print styles and page settings are applied
   const printStyle = iframeDoc.createElement('style');
   printStyle.textContent = `
