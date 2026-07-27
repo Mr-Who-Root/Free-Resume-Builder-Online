@@ -72,12 +72,15 @@ export const downloadPdf = (resumeElementId: string, filename: string, pageSize:
   const printStyle = iframeDoc.createElement('style');
   printStyle.textContent = `
     @page {
-      margin: 15mm 15mm 15mm 15mm;
+      /* Setting margin to 0 suppresses the browser's automatic date/title header
+         and URL footer that browsers inject into the margin area by default. */
+      margin: 0;
       size: ${pageSize === 'letter' ? 'letter' : 'A4'};
     }
     html, body {
       margin: 0 !important;
-      padding: 0 !important;
+      /* Replicate the 15mm page insets via padding so content has proper spacing */
+      padding: 15mm !important;
       background: white !important;
       color: black !important;
       -webkit-print-color-adjust: exact !important;
