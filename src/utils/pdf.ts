@@ -120,8 +120,8 @@ export const downloadPdf = (resumeElementId: string, filename: string, pageSize:
   `;
   iframeDoc.head.appendChild(printStyle);
 
-  // Set title to empty to avoid printing document title in header
-  iframeDoc.title = '';
+  // Set document title so browser uses it as default PDF filename when saving
+  iframeDoc.title = filename.replace(/\.pdf$/i, '');
 
   // Wrap element content
   iframeDoc.body.innerHTML = `
