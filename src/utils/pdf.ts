@@ -79,7 +79,11 @@ export const downloadPdf = (resumeElementId: string, filename: string, pageSize:
     }
     html, body {
       margin: 0 !important;
-      padding: 0 !important;
+      /* padding:15mm + box-sizing:border-box creates the 15mm gutters inside the
+         zero-margin page, replicating the effect of @page{margin:15mm} scaling
+         without leaving space for browser date/title headers or URL footers. */
+      padding: 15mm !important;
+      box-sizing: border-box !important;
       background: white !important;
       color: black !important;
       -webkit-print-color-adjust: exact !important;
@@ -87,7 +91,9 @@ export const downloadPdf = (resumeElementId: string, filename: string, pageSize:
     }
     
     .print-container {
-      width: ${pageWidth} !important;
+      /* Use 100% so the container fills the padded body area instead of
+         overflowing at a fixed 816px on a zero-margin page. */
+      width: 100% !important;
       margin: 0 !important;
       padding: 0 !important;
     }
