@@ -79,8 +79,7 @@ export const downloadPdf = (resumeElementId: string, filename: string, pageSize:
     }
     html, body {
       margin: 0 !important;
-      /* Replicate the 15mm page insets via padding so content has proper spacing */
-      padding: 15mm !important;
+      padding: 0 !important;
       background: white !important;
       color: black !important;
       -webkit-print-color-adjust: exact !important;
